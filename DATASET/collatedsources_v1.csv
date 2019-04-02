@@ -1,0 +1,149 @@
+﻿ID;in_corpus;language;book_code;book_category_code;book_category_name;book_number;author;book_title;place;year_edited
+1;Y;fr;01_01;1;nosologie;1;Alibert,  J.-L.;Nosologie naturelle;Paris;1817
+2;Y;fr;01_02;1;nosologie;2;Boissier de Sauvages,  Fr.;Nosologie méthodique (10 vols.);Lyons;1772
+3;Y;fr;01_07;1;nosologie;7;Cullen,  W.;Institutions de médecine pratique (2 vols.);Paris;1785
+4;Y;fr;01_09;1;nosologie;9;Duret,  F.-J.-J.;Tableau d'une classification générale des maladies;Paris;1813
+5;Y;fr;01_12;1;nosologie;12;Latour,  F.-D.;Nosographie synoptique (1 seul paru);Paris;1810
+6;Y;fr;01_14;1;nosologie;14;Pinel,  Ph.;Nosographie philosophique;Paris;1798
+7;Y;fr;01_16;1;nosologie;16;Sydenham,  Th.;Médecine pratique;Paris;1784
+8;Y;fr;02_01;2;police et géographie médicales;1;Audin-Rouviére,  J.-M.;Essai sur la topographie physique et médicale de Paris;Paris;1794
+9;Y;fr;02_02;2;police et géographie médicales;2;Bacher,  A.;De la médecine considérée politiquement;Paris;1801
+10;Y;fr;02_03;2;police et géographie médicales;3;Banau et Turben;Mémoires sur les épidémies du Languedoc;Paris;1786
+11;Y;fr;02_04;2;police et géographie médicales;4;Barberet,  D.;Mémoire sur les maladies épidémiques des bestiaux;Paris;1766
+12;Y;fr;02_05;2;police et géographie médicales;5;Bienville,  J.-D.-T.;Traité des erreurs populaires sur la santé;La Haye;1775
+13;Y;fr;02_06;2;police et géographie médicales;6;Cattet,  J.-J. et Gardet,  J.-B.;Essai sur la contagion;Paris;1802
+14;Y;fr;02_09;2;police et géographie médicales;9;Colombier,  J.;Préceptes sur la santé des gens de guerre;Paris;1775
+15;Y;fr;02_15;2;police et géographie médicales;15;Desgenettes,  R.-N.;Histoire médicale de l'armée d'Orient;Paris;1802
+16;Y;fr;02_19;2;police et géographie médicales;19;Frier,  F.;Guide pour la conservation de l'homme;Grenoble;1789
+17;Y;fr;02_23;2;police et géographie médicales;23;Guindant,  T.;La nature opprimée par la médecine moderne;Paris;1768
+18;Y;fr;02_24;2;police et géographie médicales;24;Guyton-Morveau,  L.-B.;Traité des moyens de désinfecter l'air;Paris;1801
+19;Y;fr;02_25;2;police et géographie médicales;25;Hautesierck,  F.-M.;Recueil d'observations de médecine des hôpitaux militaires (2 vols.);Paris;1772
+20;Y;fr;02_26;2;police et géographie médicales;26;Hildenbrand,  J.-V.;Du typhus contagieux;Paris;1811
+21;Y;fr;02_28;2;police et géographie médicales;28;N/A;Instruction sur les moyens d'entretenir la salubrité et de purifier l'air des salles dans le hôpitaux militaires;Paris;1794
+22;Y;fr;02_29;2;police et géographie médicales;29;Jacquin,  A.-P.;De la Santé;Paris;1762
+23;Y;fr;02_30;2;police et géographie médicales;30;Lafon,  J.-B.;Philosophie médicale;Paris;1796
+24;Y;fr;02_31;2;police et géographie médicales;31;Lanthenas,  F.;De l'influence de la liberté sur la santé la morale et le bonheur;Paris;1798
+25;Y;fr;02_35;2;police et géographie médicales;35;Lepecq de La Cloture,  L.;Collection d'observations sur les maladies et constitutions épidémiques (2 vols.);Rouen;1778
+26;Y;fr;02_36;2;police et géographie médicales;36;Lioult,  P.-J.;Les charlatans dévoilés;Paris;1800
+27;Y;fr;02_37;2;police et géographie médicales;37;Mackenzie,  J.;Histoire de la santé et de l'art de la conserver;The Hague;1759
+28;Y;fr;02_40;2;police et géographie médicales;40;Menuret,  J.-J.;Essai sur l'action de l'air dans les maladies contagieuses;Paris;1781
+29;Y;fr;02_41;2;police et géographie médicales;41;Menuret,  J.-J.;Essai sur l'histoire médico-topographique de Paris;Paris;1786
+30;Y;fr;02_42;2;police et géographie médicales;42;Murat,  J.-A.;Topographie médicale de la ville de Montpellier;Montpellier;1810
+31;Y;fr;02_45;2;police et géographie médicales;45;Petit,  M.-A.;in Essai sur la médecine du cœur;Lyon;1806
+32;Y;fr;02_46;2;police et géographie médicales;46;Pichler,  J.-F.-C.;Mémoire sur les maladies contagieuses;Strasbourg;1786
+33;Y;fr;02_48;2;police et géographie médicales;48;Quatroux,  Fr.;Traité de la peste;Paris;1771
+34;Y;fr;02_49;2;police et géographie médicales;49;Razoux,  J.;Tables nosologiques et météorologiques dressées à l'Hôtel-Dieu de Nîmes;Basel;1767
+35;Y;fr;02_51;2;police et géographie médicales;51;Roy-Desjoncades,  A.;Les lois de la nature applicables aux lois physiques de la médecine (2 vols.);Paris;1788
+36;Y;fr;02_52;2;police et géographie médicales;52;Rochard,  C.-C.-T.;Programme de cours sur les maladies épidémiques;Strasbourg;1805
+37;Y;fr;02_53;2;police et géographie médicales;53;Ruette,  F.;Observations cliniques sur une maladie épidémique;Paris;1799
+38;Y;fr;02_55;2;police et géographie médicales;55;Souquet;Essai sur l'histoire topographique médico-physique du district de Boulogne;Boulogne;1794
+39;Y;fr;02_56;2;police et géographie médicales;56;Tallavignes,  J.-A.;Dissertation sur la médecine où l'on prouve que l'homme civilisé est plus sujet aux maladies graves;Carcassonne;1821
+40;Y;fr;02_57;2;police et géographie médicales;57;Thiery,  F.;Vœux d'un patriote sur la médecine en France;Paris;1789
+41;Y;fr;03_04;3;réforme de la pratique et de l'enseignement;4;Cabanis,  P.-J.-G.;Œuvres (2 vols.);Paris;1823
+42;Y;fr;03_07;3;réforme de la pratique et de l'enseignement;7;Cantin,  D.-M.-J.;Projet de réforme adressé à l'Assemblée Nationale;Paris;1790
+43;Y;fr;03_08;3;réforme de la pratique et de l'enseignement;8;Caron,  J.-F.-C.;Réflexions sur l'exercice de la médecine;Paris;1804
+44;Y;fr;03_10;3;réforme de la pratique et de l'enseignement;10;Chambon de Montaux;Moyens de rendre les hôpitaux utiles et de perfectionner la médecine;Paris;1787
+45;Y;fr;03_11;3;réforme de la pratique et de l'enseignement;11;Colon de Divol;Réclamations des malades de Bicêtre;Paris;1790
+46;Y;fr;03_13;3;réforme de la pratique et de l'enseignement;13;Daunou,  P.-C.;Rapports sur les Ecoles spéciales;Paris;1797
+47;Y;fr;03_16;3;réforme de la pratique et de l'enseignement;16;Desmonceaux,  A.;De la bienfaisance nationale;Paris;1787
+48;Y;fr;03_17;3;réforme de la pratique et de l'enseignement;17;Duchanoy;Projet d'organisation médicale;N/A;1803
+49;Y;fr;03_18;3;réforme de la pratique et de l'enseignement;18;Du Laurens,  J.;Moyens de rendre les hôpitaux utiles et de perfectionner les médecins;Paris;1787
+50;Y;fr;03_19;3;réforme de la pratique et de l'enseignement;19;Dupont de Nemours,  P.;Idées sur les secours à donner aux pauvres malades dans une grande ville;Paris;1786
+51;Y;fr;03_26;3;réforme de la pratique et de l'enseignement;26;Fourcroy,  A. F.;Rapport sur l'enseignement libre des sciences et des arts;Paris;1794
+52;Y;fr;03_27;3;réforme de la pratique et de l'enseignement;27;Fourot;Essai sur les concours en médecine;Paris;1786
+53;Y;fr;03_28;3;réforme de la pratique et de l'enseignement;28;Gallot,  J.-G.;Vues générales sur la restauration de l'art de guérir;Paris;1790
+54;Y;fr;03_30;3;réforme de la pratique et de l'enseignement;30;Guillaume,  J.;Procès-verbaux du Comité d'Instruction publique;Paris;1795
+55;Y;fr;03_37;3;réforme de la pratique et de l'enseignement;37;Marquais,  J.-Th.;Rapport au Roi sur l’état actuel de la médecine en France;Paris;1814
+56;Y;fr;03_43;3;réforme de la pratique et de l'enseignement;43;Petit,  M. A.;Sur la meilleure manière de construire un hôpital;Paris;1774
+57;Y;fr;03_47;3;réforme de la pratique et de l'enseignement;47;N/A;Précis historique de l’établissement de la Société royale de Médecine;N/A;1779
+58;Y;fr;03_57;3;réforme de la pratique et de l'enseignement;57;Sabarot de L'Avernière;Vue de législation médicale adressée aux Etats généraux;N/A;1789
+59;Y;fr;03_58;3;réforme de la pratique et de l'enseignement;58;Tissot,  S.-A.-D.;Essai sur les moyens de perfectionner les études de médecine;Lausanne;1785
+60;Y;fr;03_59;3;réforme de la pratique et de l'enseignement;59;Vicq d'Azyr,  F.;Œuvres (6 vols.);Paris;1805
+61;Y;fr;04_01;4;les méthodes;1;Amard,  L.-V.-F.;Association intellectuelle (2 vols.);Paris;1821
+62;Y;fr;04_02;4;les méthodes;2;Amoreux,  P.-J.;Essai sur la médecine des Arabes;Montpellier;1805
+63;Y;fr;04_04;4;les méthodes;4;Auenbrugger;Nouvelle méthode pour reconnaître les maladies internes (Fr. trans. in Rozière de La Chassaigne, Manuel des pulmoniques);Paris;1763
+64;Y;fr;04_05;4;les méthodes;5;Beullac,  J.-P.;Nouveau guide de l’étudiant en médecine;Paris;1824
+65;Y;fr;04_06;4;les méthodes;6;Bordeu,  Th.;Recherches sur le pouls (4 vols.);Paris;1786
+66;Y;fr;04_07;4;les méthodes;7;Bouillaud,  J.;Dissertation sur les généralités de la clinique;Paris;1831
+67;Y;fr;04_08;4;les méthodes;8;Broussonnet,  J.-L.-V.;Tableau élémentaire de séméiotique;Montpellier;1798
+68;Y;fr;04_09;4;les méthodes;9;Brulley,  C.-A.;Essai sur l'art de conjecturer en médecine;Paris;1802
+69;Y;fr;04_10;4;les méthodes;10;Bruté,  S.-G.-G.;Essai sur l'histoire et les avantages des institutions cliniques;Paris;1803
+70;Y;fr;04_11;4;les méthodes;11;Chomel,  J.-B.-L.;Essai historique sur la médecine en France;Paris;1762
+71;Y;fr;04_12;4;les méthodes;12;Clos de Sorèze,  J.-A.;De l'analyse en médecine;Montpellier;1797
+72;Y;fr;04_13;4;les méthodes;13;Corvisart,  J.-N.;Essai sur les maladies et lésions du cœur et des gros vaisseaux;Paris;1806
+73;Y;fr;04_14;4;les méthodes;14;Dardonville,  H.;Réflexions pratiques sur les dangers des systèmes en médecine;Paris;1818
+74;Y;fr;04_16;4;les méthodes;16;Double,  F.-J.;Séméiologie générale ou Traité des signes et de leur valeur dans les maladies (3 vols.);Paris;1822
+75;Y;fr;04_17;4;les méthodes;17;Duvivier,  P.-H.;De la médecine considérée comme science et comme art;Paris;1826
+76;Y;fr;04_18;4;les méthodes;18;Essyg;Traité du diagnostic médical;Paris;1803
+77;Y;fr;04_19;4;les méthodes;19;Fabre;Recherche des vrais principes de l'art de guérir;Paris;1790
+78;Y;fr;04_20;4;les méthodes;20;Fordyce,  G.;Essai d'un nouveau plan d'observations médicales;Paris;1811
+79;Y;fr;04_21;4;les méthodes;21;Fouquet,  H.;Discours sur la clinique;Montpellier;1802
+80;Y;fr;04_24;4;les méthodes;24;Girbal,  A.;Essai sur l'esprit de la clinique médicale de Montpellier;Montpellier;1857
+81;Y;fr;04_27;4;les méthodes;27;Hildenbrand,  J.;Médecine pratique (2 vols.);Paris;1824
+82;Y;fr;04_28;4;les méthodes;28;Landré-Beauvais,  A.-J.;Séméiotique ou traité des signes des maladies;Paris;1810
+83;Y;fr;04_29;4;les méthodes;29;Leroux,  J.-J.;Cours sur les généralités de la médecine;Paris;1818
+84;Y;fr;04_31;4;les méthodes;31;Lordat,  J.;Conseils sur la manière d’étudier la physiologie de l'homme;Montpellier;1813
+85;Y;fr;04_32;4;les méthodes;32;Lordat,  J.;Perpétuité de la médecine;Montpellier;1837
+86;Y;fr;04_33;4;les méthodes;33;Mahon,  P.-A.-O.;Histoire de la médecine clinique;Paris;1804
+87;Y;fr;04_34;4;les méthodes;34;Martinet,  L.;Manuel de clinique;Paris;1825
+88;Y;fr;04_35;4;les méthodes;35;Maygrier,  J.-P.;Guide de l’étudiant en médecine;Paris;1807
+89;Y;fr;04_36;4;les méthodes;36;Menuret,  J.-J.;Traité du pouls;Paris;1798
+90;Y;fr;04_37;4;les méthodes;37;Moscati,  P.;De l'emploi des systèmes dans la médecine pratique;Strasbourg;1795
+91;Y;fr;04_38;4;les méthodes;38;Petit,  M.-A.;Collection d'observations cliniques;Lyons;1815
+92;Y;fr;04_39;4;les méthodes;39;Pinel,  Ph.;Médecine clinique;Paris;1802
+93;Y;fr;04_41;4;les méthodes;41;Rostan,  L.;Traité élémentaire de diagnostic, de pronostic, d'indications thérapeutiques (6 vols.);Paris;1826
+94;Y;fr;04_42;4;les méthodes;42;Roucher-Deratte,  Cl.;Leçons sur l'art d'observer;Paris;1807
+95;Y;fr;04_43;4;les méthodes;43;Selle,  Ch.-G.;Médecine clinique;Montpellier;1787
+96;Y;fr;04_44;4;les méthodes;44;Selle,  Ch.-G.;Introduction à l’étude de la nature et de la médecine;Montpellier;1795
+97;Y;fr;04_45;4;les méthodes;45;Sénebier,  J.;Essai sur l'art d'observer et defaire des expériences (3 vols.);N/A;1802
+98;Y;fr;04_48;4;les méthodes;48;Zimmermann,  G.;Traité de l'expérience en médecine (3 vols.);Paris;1774
+99;Y;fr;05_01;5;anatomie pathologique;1;Baillie,  M.;Anatomie pathologique des organes les plus importants du corps humain;Paris;1815
+100;Y;fr;05_02;5;anatomie pathologique;2;Bayle,  G.-L.;Recherches sur la phtisie pulmonaire;Paris;1810
+101;Y;fr;05_03;5;anatomie pathologique;3;Bichat,  X.;Anatomie générale appliquée à la physiologie et à médecine (3 vols.);Paris;1801
+102;Y;fr;05_04;5;anatomie pathologique;4;Bichat,  X.;Anatomie pathologique;Paris;1825
+103;Y;fr;05_05;5;anatomie pathologique;5;Bichat,  X.;Recherches physiologiques sur la vie et la mort;Paris;1800
+104;Y;fr;05_06;5;anatomie pathologique;6;Bichat,  X.;Traité des membranes;Paris;1807
+105;Y;fr;05_08;5;anatomie pathologique;8;Breschet,  G.;Répertoire général d'anatomie et de physiologie pathologiques (6 vols.);Paris;1828
+106;Y;fr;05_10;5;anatomie pathologique;10;Chomel,  A.-F.;Eléments de pathologie générale;Paris;1817
+107;Y;fr;05_11;5;anatomie pathologique;11;Cruveilhier,  J.;Essai sur l'anatomie pathologique en général (2 vols.);Paris;1816
+108;Y;fr;05_12;5;anatomie pathologique;12;Dezeimeris,  J.-E.;Aperçu rapide des découvertes en anatomie pathologique;Paris;1830
+109;Y;fr;05_13;5;anatomie pathologique;13;Guillaume,  A.;De l'influence de l'anatomie pathologique sur les progrès de la médecine;Dôle;1834
+110;Y;fr;05_14;5;anatomie pathologique;14;Laënnec,  R.;Traité de l'auscultation médiate (2 vols.);Paris;1819
+111;Y;fr;05_15;5;anatomie pathologique;15;Laënnec,  R.;Traité inédit de l'anatomie pathologique;Paris;1884
+112;Y;fr;05_16;5;anatomie pathologique;16;Lallemand,  F.;Recherches anatomo-pathologiques sur l'encéphale et ses dépendances (2 vols.);Paris;1820
+113;Y;fr;05_18;5;anatomie pathologique;18;Portal,  A.;Cours d'anatomie médicale (5 vols.);Paris;1804
+114;Y;fr;05_19;5;anatomie pathologique;19;Prost,  P.-A.;La médecine éclairée par l'observation et l'ouverture des corps (2 vols.);Paris;1804
+115;Y;fr;05_20;5;anatomie pathologique;20;Rayer,  P.;Sommaire d'une histoire abrégée de l'anatomie pathologique;Paris;1818
+116;Y;fr;05_22;5;anatomie pathologique;22;Richerand,  B.-A.;Histoire des progrès récents de la chirurgie;Paris;1825
+117;Y;fr;05_23;5;anatomie pathologique;23;Saucerotte,  C.;De l'influence de l'anatomie pathologique sur les progrès de la médecine;Paris;1834
+118;Y;fr;06_02;6;les fièvres;2;Boisseau,  F.-G.;Pyrétologie physiologique;Paris;1823
+119;Y;fr;06_03;6;les fièvres;3;Bompart,  A.;Description de la fièvre adynamique;Paris;1815
+120;Y;fr;06_04;6;les fièvres;4;Bouillaud,  J.;Traité clinique ou expérimental des fièvres dites essentielles;Paris;1830
+121;Y;fr;06_05;6;les fièvres;5;Broussais,  F.-J.-V.;Catéchisme de médecine physiologique;Paris;1824
+122;Y;fr;06_06;6;les fièvres;6;Broussais,  F.-J.-V.;Examen des doctrines médicales;Paris;1821
+123;Y;fr;06_07;6;les fièvres;7;Broussais,  F.-J.-V.;Histoire des phlegmasies ou inflammations chroniques (2 vols.);Paris;1808
+124;Y;fr;06_08;6;les fièvres;8;Broussais,  F.-J.-V.;Leçons sur la phlegmasie gastrique;Paris;1819
+125;Y;fr;06_09;6;les fièvres;9;Broussais,  F.-J.-V.;Mémoire sur l'influence que les travaux des médecins physiologistes ont exercée sur l’état de la médecine;Paris;1832
+126;Y;fr;06_11;6;les fièvres;11;Caffin,  J.-F.;Quelques mots de réponse à un ouvrage de M. Broussais;Paris;1818
+127;Y;fr;06_12;6;les fièvres;12;Castel,  L.;Réfutation de la nouvelle doctrine médicale de M. le Dr. Broussais;Paris;1824
+128;Y;fr;06_13;6;les fièvres;13;Chambon de Montaux;Traité de la fièvre maligne simple et des fièvres compliquées de malignité (4 vols.);Paris;1787
+129;Y;fr;06_14;6;les fièvres;14;Chauffard,  H.;Traité sur les fièvres prétendues essentielles;Paris;1825
+130;Y;fr;06_15;6;les fièvres;15;Chomel,  A. F.;De l'existence des fièvres;Paris;1820
+131;Y;fr;06_16;6;les fièvres;16;Chomel,  A. F.;Des fièvres et des maladies pestilentielles;Paris;1821
+132;Y;fr;06_17;6;les fièvres;17;Collineau,  J.-C.;Peut-on mettre en doute l'existence des fièvres essentielles;Paris;1823
+133;Y;fr;06_18;6;les fièvres;18;Dagoumer,  Th.;Précis historique de la fièvre;Paris;1831
+134;Y;fr;06_19;6;les fièvres;19;Dardonville,  H.;Mémoire sur lesfièvres;Paris;1821
+135;Y;fr;06_20;6;les fièvres;20;Ducamp,  Th.;Réflexions critiques sur les écrits de M. Chomel;Paris;1821
+136;Y;fr;06_22;6;les fièvres;22;Fournier,  M.;Observations sur les fièvres putrides et malignes;Dijon;1775
+137;Y;fr;06_23;6;les fièvres;23;Gérard,  M.;Peut-on mettre en doute l'existence des fièvres essentielles?;Paris;1823
+138;Y;fr;06_25;6;les fièvres;25;Giraudy,  Ch.;De la fièvre;Paris;1821
+139;Y;fr;06_26;6;les fièvres;26;Grimaud,  M. de;Cours complet ou Traité des fièvres (3 vols.);Montpellier;1791
+140;Y;fr;06_27;6;les fièvres;27;Hernandez,  J.-F.;Essai sur le typhus;Paris;1816
+141;Y;fr;06_33;6;les fièvres;33;Lesage,  L.-A.;Danger et absurdité de la doctrine physiologique;Paris;1823
+142;Y;fr;06_34;6;les fièvres;34;Monfalcon,  J.-B.;Essai pour servir à l'histoire des fièvres adynamiques;Lyons;1823
+143;Y;fr;06_35;6;les fièvres;35;Mongellaz,  P.-J.;Essai sur les irritations intermittentes (2 vols.);Paris;1821
+144;Y;fr;06_37;6;les fièvres;37;Petit,  M.-A.;Traité de la fièvre entéro-mésentérique;Paris;1813
+145;Y;fr;06_39;6;les fièvres;39;Quitard-Piorry,  H.-H.;Traité sur la non-existence des fièvres essentielles;Paris;1830
+146;Y;fr;06_40;6;les fièvres;40;Roche,  L.-Ch.;Réfutation des objections faites à la nouvelle doctrine des fièvres;Paris;1821
+147;Y;fr;06_44;6;les fièvres;44;Stoll,  M.;Aphorismes sur la connaissance et la curation des fièvres;Paris;1797
+148;Y;fr;06_45;6;les fièvres;45;Tissot,  S.-A.-D.;Dissertation sur les fièvres bilieuses;Paris;1800
