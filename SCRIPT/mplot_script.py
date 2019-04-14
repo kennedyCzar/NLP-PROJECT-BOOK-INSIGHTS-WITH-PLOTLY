@@ -20,8 +20,8 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 #get file path
-path = '/home/kenneth/Documents/FREELANCER'
-direc = join(path, 'PLOTLY_RESEARCH/')
+path = '/home/kenneth/Documents/GIT_PROJECTS/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY'
+direc = join(path, 'DATASET/')
 data = pd.read_csv(direc + 'collatedsources_v1.csv', sep = ';')
 data.set_index(['ID'], inplace = True)
 
@@ -115,7 +115,7 @@ app.layout = html.Div([
                     value=data.year_edited.min(),
                     marks={str(year): str(year) for year in range(data.year_edited.min(), data.year_edited.max(), 5)}
                 )
-            ], style = {'background-color': 'rgb(204, 230, 244)', 'visibility': 'visible', 'left': '0%', 'width': '100%', 'padding-left': '15px', 'padding-right': '15px'}),
+            ], style = {'background-color': 'rgb(204, 230, 244)', 'visibility': 'visible', 'left': '0%', 'width': '49%', 'padding': '0px 20px 20px 20px'}),
     #-- Footer section
     html.Div([
         #--footer section
@@ -155,7 +155,7 @@ def update_figure(make_selection):
             'layout': go.Layout(
                     xaxis={'type': 'linear', 'title': 'Book ID'},
                     yaxis={'title': 'Book number'},
-#                    margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
+                    margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                     legend={'x': 0, 'y': 1},
                     hovermode='closest')
                     }
