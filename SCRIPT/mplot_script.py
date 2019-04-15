@@ -24,6 +24,7 @@ path = '/home/kenneth/Documents/GIT_PROJECTS/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOT
 direc = join(path, 'DATASET/')
 data = pd.read_csv(direc + 'collatedsources_v1.csv', sep = ';')
 data.set_index(['ID'], inplace = True)
+columns = [x for x in data.columns]
 
 app.layout = html.Div([
     html.Div([
@@ -33,7 +34,8 @@ app.layout = html.Div([
                 ], style={'text-align': 'left','width': '49%', 'display': 'inline-block','vertical-align': 'middle'}),
         html.Div([
                 html.H4('Project by Miloskrissak'),
-                html.Label('Dash is a web application framework that provides pure Python abstraction around HTML, CSS, and JavaScript.<Instead of writing HTML or using an HTML templating engine, you compose your layout using Python structures with the dash-html-components library.')
+                html.Label('NLP with python 3: Topic visualization in intereative chart. Cluster analysis of word corpus using Naive Bayes algorithm. Hover over the data points to see '+
+                           'meta data info the respective books.')
                 ], style= {'width': '49%', 'display': 'inline-block','vertical-align': 'middle', 'font-size': '12px'})
                 ], style={'background-color': 'white', 'box-shadow': 'black 0px 1px 0px 0px'}),
     #--scaling section
@@ -44,11 +46,8 @@ app.layout = html.Div([
                     dcc.RadioItems(
                             #---
                             id='x-items',
-                            options = [
-                                {'label': 'Linear', 'value': 'linear'},
-                                {'label': 'Log', 'value': 'log'},
-                                ],
-                            value = "linear",
+                            options =[{'label': i, 'value': i} for i in ['Linear', 'Log']],
+                            value = "Linear",
                             labelStyle={'display': 'inline-block'}
                             ), 
                     ], style = {'display': 'inline-block', 'width': '25%'}),
@@ -58,11 +57,8 @@ app.layout = html.Div([
                     dcc.RadioItems(
                             #---
                             id='y-items',
-                            options = [
-                                {'label': 'Linear', 'value': 'linear'},
-                                {'label': 'Log', 'value': 'log'},
-                                ],
-                            value = "linear",
+                            options = [{'label': i, 'value': i} for i in ['Linear', 'Log']],
+                            value = "Linear",
                             labelStyle={'display': 'inline-block'}
                             ), 
                     ], style = {'display': 'inline-block', 'width': '25%'}),
@@ -72,11 +68,8 @@ app.layout = html.Div([
                     dcc.RadioItems(
                             #---
                             id='x-vals',
-                            options = [
-                                {'label': 'Views', 'value': 'views'},
-                                {'label': 'Duration', 'value': 'Duration'},
-                                ],
-                            value = "views",
+                            options = [{'label': i, 'value': i} for i in ['Views', 'Duration']],
+                            value = "Views",
                             labelStyle={'display': 'inline-block'}
                             ), 
                     ], style = {'display': 'inline-block', 'width': '25%'}),
@@ -86,10 +79,7 @@ app.layout = html.Div([
                     dcc.RadioItems(
                             #---
                             id='Sort-Tags',
-                            options = [
-                                {'label': 'A-z', 'value': 'A-z'},
-                                {'label': 'Most Tags', 'value': 'Most Tags'},
-                                ],
+                            options = [{'label': i, 'value': i} for i in ['A-z', 'Most Tags']],
                             value = "A-z",
                             labelStyle={'display': 'inline-block'}
                             ), 
@@ -112,7 +102,7 @@ app.layout = html.Div([
                     id='year-slider',
                     min=data.year_edited.min(),
                     max=data.year_edited.max(),
-                    value=data.year_edited.min(),
+                    value=data.year_edited.max(),
                     marks={str(year): str(year) for year in range(data.year_edited.min(), data.year_edited.max(), 5)}
                 )
             ], style = {'background-color': 'rgb(204, 230, 244)', 'visibility': 'visible', 'left': '0%', 'width': '49%', 'padding': '0px 20px 20px 20px'}),
@@ -121,8 +111,34 @@ app.layout = html.Div([
         #--footer section
         
         html.Div([
-                html.H4('Project by Miloskrissak'),
-                html.Label('Dash is a web application framework that provides pure Python abstraction around HTML, CSS, and JavaScript.<Instead of writing HTML or using an HTML templating engine, you compose your layout using Python structures with the dash-html-components library.')
+                html.H4('NOSOLOGIE'),
+                html.Label("""NOSOLOGIE
+                            MÉTHODIQUE,
+                            
+                            OU 317'
+                            
+                            DISTRIBUTION DES MALJDIES
+                            
+                            
+                            EN CLASSES, EN GENRES ET EN ESPECES,
+                            
+                            
+                            Suivant VEÇprit de Sy D EN H AM y & la
+                            Méthode des BOTANISTES. . -
+                            
+                            Par François Bôissièr de Sauvages 7
+                            Confeiller & Méilecin du.Roi^ & ancien Pro-
+                            feffeur de Boranique dans FUniverfité de Mont¬
+                            pellier, des Àcadétniés de Montpelfiër, de Lon¬
+                            dres-, d’Upfal, de Berlin, de Florence, &c.
+                            
+                            T RA nu î TE fur la dernîererédition kuïne, par,
+                            M. Gouvion , DoUeur en Médecine.
+                            
+                            
+                            On a joint à cet Ouvrage celui du Chev. VoN
+                            Linné, intitulé Généra Morhorum , aveft^-
+                            Traduâion françolfe à côté.""")
                 ], style= {'width': '74%', 'display': 'inline-block','vertical-align': 'middle', 'font-size': '12px'}),
         html.Div([
                 html.H6('Digital Book Insight'),
@@ -135,17 +151,19 @@ app.layout = html.Div([
 
 @app.callback(
         Output('scatter_plot', 'figure'),
-        [Input('year-slider', 'value')]
-        )
-def update_figure(make_selection):
+        [Input('year-slider', 'value'),
+         Input('x-items', 'value'),
+         Input('y-items', 'value')])
+def update_figure(make_selection, xaxis, yaxis):
     year_filter = data[data.year_edited == make_selection]
     traces = []
     for ii in year_filter.place.unique():
         data_places = year_filter[year_filter['place'] == ii]
         traces.append(go.Scatter(
                 x = data_places.index,
-                y = data_places['book_number'],
-                text = data_places['place'],
+                y = data_places['book_category_name'],
+                text = [(x, y, z, w) for (x, y, z, w) in zip(data_places['place'],\
+                        data_places['author'], data_places['book_title'] , data_places['year_edited'])],
                 mode = 'markers',
                 opacity = 0.5,
                 marker = {'size': 10, 'line': {'width': 0.5, 'color': 'white'}},
@@ -153,8 +171,11 @@ def update_figure(make_selection):
                 ))
     return {'data': traces,
             'layout': go.Layout(
-                    xaxis={'type': 'linear', 'title': 'Book ID'},
-                    yaxis={'title': 'Book number'},
+                    xaxis={'title': 'Book ID',
+                           'type': 'linear' if xaxis == 'Linear' else 'log'},
+                    yaxis={'title': 'Book number',
+                           'type': 'linear' if yaxis == 'Linear' else 'log'},
+                    
                     margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                     legend={'x': 0, 'y': 1},
                     hovermode='closest')
