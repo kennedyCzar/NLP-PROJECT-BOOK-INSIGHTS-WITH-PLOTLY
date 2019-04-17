@@ -161,7 +161,7 @@ def update_figure(make_selection, xaxis, yaxis):
         Output('topic', 'children'),
         [Input('scatter_plot', 'hoverData')]
         )
-def update_bookinsight(hoverData):
+def update_bookheader(hoverData):
     if hoverData:
         return html.H4('NOSOLOGIE')
     
@@ -169,7 +169,7 @@ def update_bookinsight(hoverData):
         Output('label', 'children'),
         [Input('scatter_plot', 'hoverData')]
         )
-def update_bookinsight(hoverData):
+def update_label(hoverData):
     if hoverData:
         return html.H4('Welcome here')
     
