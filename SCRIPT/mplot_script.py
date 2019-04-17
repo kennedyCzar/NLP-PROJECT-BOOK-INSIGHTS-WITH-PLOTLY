@@ -111,34 +111,9 @@ app.layout = html.Div([
         #--footer section
         
         html.Div([
-                html.H4('NOSOLOGIE'),
-                html.Label("""NOSOLOGIE
-                            MÉTHODIQUE,
-                            
-                            OU 317'
-                            
-                            DISTRIBUTION DES MALJDIES
-                            
-                            
-                            EN CLASSES, EN GENRES ET EN ESPECES,
-                            
-                            
-                            Suivant VEÇprit de Sy D EN H AM y & la
-                            Méthode des BOTANISTES. . -
-                            
-                            Par François Bôissièr de Sauvages 7
-                            Confeiller & Méilecin du.Roi^ & ancien Pro-
-                            feffeur de Boranique dans FUniverfité de Mont¬
-                            pellier, des Àcadétniés de Montpelfiër, de Lon¬
-                            dres-, d’Upfal, de Berlin, de Florence, &c.
-                            
-                            T RA nu î TE fur la dernîererédition kuïne, par,
-                            M. Gouvion , DoUeur en Médecine.
-                            
-                            
-                            On a joint à cet Ouvrage celui du Chev. VoN
-                            Linné, intitulé Généra Morhorum , aveft^-
-                            Traduâion françolfe à côté.""")
+#                html.Div(id = 'hovertext'),
+                html.H4(id = 'topic'),
+                html.Label(id = 'label'),
                 ], style= {'width': '74%', 'display': 'inline-block','vertical-align': 'middle', 'font-size': '12px'}),
         html.Div([
                 html.H6('Digital Book Insight'),
@@ -161,28 +136,47 @@ def update_figure(make_selection, xaxis, yaxis):
         data_places = year_filter[year_filter['place'] == ii]
         traces.append(go.Scatter(
                 x = data_places.index,
-                y = data_places['book_category_name'],
+                y = data_places['book_number'],
                 text = [(x, y, z, w) for (x, y, z, w) in zip(data_places['place'],\
                         data_places['author'], data_places['book_title'] , data_places['year_edited'])],
                 mode = 'markers',
-                opacity = 0.5,
-                marker = {'size': 10, 'line': {'width': 0.5, 'color': 'white'}},
+#                opacity = 0.5,
+                marker = {'size': 10, 
+                          'opacity': 0.5,
+                          'line': {'width': 0.5, 'color': 'white'}},
                 name = ii,
+#                hoverinfo="name+text"
                 ))
     return {'data': traces,
             'layout': go.Layout(
-                    xaxis={'title': 'Book ID',
-                           'type': 'linear' if xaxis == 'Linear' else 'log'},
-                    yaxis={'title': 'Book number',
-                           'type': 'linear' if yaxis == 'Linear' else 'log'},
+                    xaxis={'type': 'linear' if xaxis == 'Linear' else 'log', 'title': 'Book ID'},
+                    yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book number'},
                     
                     margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                     legend={'x': 0, 'y': 1},
                     hovermode='closest')
                     }
-        
+
+@app.callback(
+        Output('topic', 'children'),
+        [Input('scatter_plot', 'hoverData')]
+        )
+def update_bookinsight(hoverData):
+    if hoverData:
+        return html.H4('NOSOLOGIE')
+    
+@app.callback(
+        Output('label', 'children'),
+        [Input('scatter_plot', 'hoverData')]
+        )
+def update_bookinsight(hoverData):
+    if hoverData:
+        return html.H4('Welcome here')
+    
+
+
 if __name__ == '__main__':
   app.run_server(debug = True)
-  
 
-  
+
+
