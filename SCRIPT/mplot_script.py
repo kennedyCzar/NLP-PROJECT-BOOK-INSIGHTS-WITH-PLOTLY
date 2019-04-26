@@ -8,6 +8,7 @@ Created on Tue Mar 26 20:52:08 2019
 import pandas as pd
 import dash
 import os 
+import json
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
@@ -19,12 +20,22 @@ from os.path import join
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
+#%% data
+
 #get file path
 path = '/home/kenneth/Documents/GIT_PROJECTS/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY'
 direc = join(path, 'DATASET/')
 data = pd.read_csv(direc + 'collatedsources_v1.csv', sep = ';')
 data.set_index(['ID'], inplace = True)
 columns = [x for x in data.columns]
+
+#-------------------------------
+
+book_path = join(path, 'DATASET/Collated books v1/')
+dirlis = sorted(os.listdir(book_path))[1:]
+
+    
+#%% app
 
 app.layout = html.Div([
     html.Div([
@@ -111,10 +122,9 @@ app.layout = html.Div([
         #--footer section
         
         html.Div([
-#                html.Div(id = 'hovertext'),
                 html.H4(id = 'topic'),
                 html.Label(id = 'label'),
-                ], style= {'width': '74%', 'display': 'inline-block','vertical-align': 'middle', 'font-size': '12px'}),
+                ], style= {'width': '74%', 'display': 'inline-block','vertical-align': 'middle', 'font-size': '12px, '}),
         html.Div([
                 html.H6('Digital Book Insight'),
                 html.Label('Dash is a web application framework that provides pure Python')
@@ -124,6 +134,7 @@ app.layout = html.Div([
     #main div ends here
     ],style = {'background-color': 'rgb(204, 230, 244)','margin': 'auto', 'width': '100%', 'display': 'block'})
 
+#--
 @app.callback(
         Output('scatter_plot', 'figure'),
         [Input('year-slider', 'value'),
@@ -137,15 +148,14 @@ def update_figure(make_selection, xaxis, yaxis):
         traces.append(go.Scatter(
                 x = data_places.index,
                 y = data_places['book_number'],
-                text = [(x, y, z, w) for (x, y, z, w) in zip(data_places['place'],\
+                text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
                         data_places['author'], data_places['book_title'] , data_places['year_edited'])],
                 mode = 'markers',
-#                opacity = 0.5,
-                marker = {'size': 10, 
+                opacity = 0.5,
+                marker = {'size': 15, 
                           'opacity': 0.5,
                           'line': {'width': 0.5, 'color': 'white'}},
                 name = ii,
-#                hoverinfo="name+text"
                 ))
     return {'data': traces,
             'layout': go.Layout(
@@ -162,21 +172,31 @@ def update_figure(make_selection, xaxis, yaxis):
         [Input('scatter_plot', 'hoverData')]
         )
 def update_bookheader(hoverData):
-    if hoverData:
-        return html.H4('NOSOLOGIE')
+    book_number = hoverData['points'][0]['text'][2:7]
+    book_path = join(path, 'DATASET/Collated books v1/')
+    dirlis = sorted(os.listdir(book_path))[1:]
+    for ii in dirlis:
+        if ii.strip('.txt') == book_number:
+            with open(book_path + ii) as f:
+                subject = f.readlines()[0].replace(',', ' ')
+    return subject
     
 @app.callback(
         Output('label', 'children'),
         [Input('scatter_plot', 'hoverData')]
         )
 def update_label(hoverData):
-    if hoverData:
-        return html.H4('Welcome here')
-    
+    book_number = hoverData['points'][0]['text'][2:7]
+    book_path = join(path, 'DATASET/Collated books v1/')
+    dirlis = sorted(os.listdir(book_path))[1:]
+    for ii in dirlis:
+        if ii.strip('.txt') == book_number:
+            with open(book_path + ii) as f:
+                text = f.read()
+    return text
 
 
 if __name__ == '__main__':
   app.run_server(debug = True)
-
 
 
