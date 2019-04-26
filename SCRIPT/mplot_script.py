@@ -8,7 +8,7 @@ Created on Tue Mar 26 20:52:08 2019
 import pandas as pd
 import dash
 import os 
-import json
+import nltk
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
@@ -172,7 +172,8 @@ def update_figure(make_selection, xaxis, yaxis):
         [Input('scatter_plot', 'hoverData')]
         )
 def update_bookheader(hoverData):
-    book_number = hoverData['points'][0]['text'][2:7]
+    #getting a Nonetype error here
+    book_number = str(hoverData['points'][0]['text'])[2:7]
     book_path = join(path, 'DATASET/Collated books v1/')
     dirlis = sorted(os.listdir(book_path))[1:]
     for ii in dirlis:
@@ -186,13 +187,15 @@ def update_bookheader(hoverData):
         [Input('scatter_plot', 'hoverData')]
         )
 def update_label(hoverData):
-    book_number = hoverData['points'][0]['text'][2:7]
+    #getting a Nonetype error here
+    book_number = str(hoverData['points'][0]['text'])[2:7]
     book_path = join(path, 'DATASET/Collated books v1/')
     dirlis = sorted(os.listdir(book_path))[1:]
     for ii in dirlis:
         if ii.strip('.txt') == book_number:
-            with open(book_path + ii) as f:
+            with open(book_path + ii, 'rU') as f:
                 text = f.read()
+                f.close()
     return text
 
 
