@@ -9,6 +9,7 @@ import pandas as pd
 import dash
 import os 
 import nltk
+import json
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
@@ -16,9 +17,13 @@ from datetime import datetime as dt
 import plotly.graph_objs as go
 from datetime import datetime
 from os.path import join
+from nltk.tokenize import word_tokenize
+french_tok = nltk.data.load('tokenizers/punkt/french.pickle')
+from flask import Flask
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+server = Flask(__name__)
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets, server = server)
 
 #%% data
 
@@ -122,7 +127,10 @@ app.layout = html.Div([
         #--footer section
         
         html.Div([
-                html.H4(id = 'topic'),
+                html.Div([
+                        html.H4(id = 'topic')], style = {'color':' rgb(35, 87, 137)', 'display': 'inline-block'}),
+                html.Div([
+                        html.H6(id = 'date')], style = {'color':' black', 'display': 'inline-block'}),
                 html.Label(id = 'label'),
                 ], style= {'width': '74%', 'display': 'inline-block','vertical-align': 'middle', 'font-size': '12px, '}),
         html.Div([
@@ -172,6 +180,8 @@ def update_figure(make_selection, xaxis, yaxis):
         [Input('scatter_plot', 'hoverData')]
         )
 def update_bookheader(hoverData):
+    from nltk.tokenize import RegexpTokenizer
+    tokenizer = RegexpTokenizer(r'\w+')
     #getting a Nonetype error here
     book_number = str(hoverData['points'][0]['text'])[2:7]
     book_path = join(path, 'DATASET/Collated books v1/')
@@ -179,7 +189,9 @@ def update_bookheader(hoverData):
     for ii in dirlis:
         if ii.strip('.txt') == book_number:
             with open(book_path + ii) as f:
-                subject = f.readlines()[0].replace(',', ' ')
+                text = f.read().strip()[0:500]
+                text = tokenizer.tokenize(text)
+                subject = text[0]
     return subject
     
 @app.callback(
@@ -187,6 +199,8 @@ def update_bookheader(hoverData):
         [Input('scatter_plot', 'hoverData')]
         )
 def update_label(hoverData):
+    from nltk.tokenize import RegexpTokenizer
+    tokenizer = RegexpTokenizer(r'\w+')
     #getting a Nonetype error here
     book_number = str(hoverData['points'][0]['text'])[2:7]
     book_path = join(path, 'DATASET/Collated books v1/')
@@ -194,12 +208,19 @@ def update_label(hoverData):
     for ii in dirlis:
         if ii.strip('.txt') == book_number:
             with open(book_path + ii, 'rU') as f:
-                text = f.read()
+                text = f.read().strip()[0:500]
+                text = tokenizer.tokenize(text)
+                text = ' '.join(text)
                 f.close()
     return text
 
 
 if __name__ == '__main__':
   app.run_server(debug = True)
+
+
+
+
+
 
 
