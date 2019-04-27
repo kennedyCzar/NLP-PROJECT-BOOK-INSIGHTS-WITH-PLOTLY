@@ -39,7 +39,26 @@ columns = [x for x in data.columns]
 book_path = join(path, 'DATASET/Collated books v1/')
 dirlis = sorted(os.listdir(book_path))[1:]
 
-    
+#%%
+#import gensim
+#from gensim.utils import simple_preprocess
+#from gensim.parsing.preprocessing import STOPWORDS
+#from nltk.stem import WordNetLemmatizer, SnowballStemmer
+#from nltk.stem.porter import *
+#import numpy as np
+#import nltk
+#nltk.download('wordnet')
+
+
+#from nltk.stem.snowball import FrenchStemmer
+#stemmer = FrenchStemmer()
+#stemmer = SnowballStemmer("english")
+#stemmer.stem(sample)
+
+#import spacy
+#import fr_core_news_sm
+#nlp = fr_core_news_sm.load()
+#stac = nlp(sample)
 #%% app
 
 app.layout = html.Div([
@@ -114,11 +133,11 @@ app.layout = html.Div([
                     ], style = {'display': 'inline-block', 'width': '35%'}),
             ]),
     html.Div([
-            dcc.Slider(
+            dcc.RangeSlider(
                     id='year-slider',
                     min=data.year_edited.min(),
                     max=data.year_edited.max(),
-                    value=data.year_edited.max(),
+                    value = [data.year_edited.min(), data.year_edited.max()],
                     marks={str(year): str(year) for year in range(data.year_edited.min(), data.year_edited.max(), 5)}
                 )
             ], style = {'background-color': 'rgb(204, 230, 244)', 'visibility': 'visible', 'left': '0%', 'width': '49%', 'padding': '0px 20px 20px 20px'}),
@@ -152,23 +171,21 @@ app.layout = html.Div([
          Input('x-items', 'value'),
          Input('y-items', 'value')])
 def update_figure(make_selection, xaxis, yaxis):
-    year_filter = data[data.year_edited == make_selection]
-    traces = []
-    for ii in year_filter.place.unique():
-        data_places = year_filter[year_filter['place'] == ii]
-        traces.append(go.Scatter(
-                x = data_places.index,
-                y = data_places['book_number'],
-                text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
-                        data_places['author'], data_places['book_title'] , data_places['year_edited'])],
-                mode = 'markers',
-                opacity = 0.5,
-                marker = {'size': 15, 
-                          'opacity': 0.5,
-                          'line': {'width': 0.5, 'color': 'white'}},
-                name = ii,
-                ))
-    return {'data': traces,
+
+    data_places = data[(data.year_edited >= make_selection[0]) & (data.year_edited <= make_selection[1])]
+    traces = go.Scatter(
+            x = data_places.index,
+            y = data_places['book_number'],
+            text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
+                    data_places['author'], data_places['book_title'] , data_places['year_edited'])],
+            mode = 'markers',
+            opacity = 0.5,
+            marker = {'size': 15, 
+                      'opacity': 0.5,
+                      'line': {'width': 0.5, 'color': 'white'}},
+            )
+    
+    return {'data': [traces],
             'layout': go.Layout(
                     xaxis={'type': 'linear' if xaxis == 'Linear' else 'log', 'title': 'Book ID'},
                     yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book number'},
