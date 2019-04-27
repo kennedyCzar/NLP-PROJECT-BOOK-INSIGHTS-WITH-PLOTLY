@@ -125,12 +125,15 @@ app.layout = html.Div([
     #-- Footer section
     html.Div([
         #--footer section
-        
         html.Div([
                 html.Div([
-                        html.H2(id = 'topic')], style = {'color':' rgb(35, 87, 137)', 'display': 'inline-block'}),
+                        html.H2(id = 'topic')], style = {'color':' rgb(35, 87, 137)'}),
                 html.Div([
-                        html.Label(id = 'date')], style = {'color':' black', 'font-weight': 'bold'}),
+                        html.Label(id = 'date')], style = {'color':' black', 'font-weight': 'bold', 'display': 'inline-block'}),
+                html.Div([
+                        html.Label(id = 'author')], style = {'color':' black', 'font-weight': 'bold', 'display': 'inline-block', 'padding': '0px 0px 10px 35px'}),
+                html.Div([
+                        html.Label(id = 'cat')], style = {'color':' black', 'font-weight': 'bold', 'display': 'inline-block', 'padding': '0px 0px 10px 35px'}),
                 html.Label(id = 'label'),
                 ], style= {'width': '74%', 'display': 'inline-block','vertical-align': 'middle', 'font-size': '12px, '}),
         html.Div([
@@ -200,8 +203,36 @@ def update_bookyear(hoverData):
     dirlis = sorted(os.listdir(book_path))[1:]
     for ii in dirlis:
         if ii.strip('.txt') == book_number:
-            subject = data[data.book_code == ii.strip('.txt')]['year_edited'].values[0]
-    return str('YEAR EDITED: ')+ str(subject)
+            date = data[data.book_code == ii.strip('.txt')]['year_edited'].values[0]
+    return str('YEAR EDITED: ')+ str(date)
+
+@app.callback(
+        Output('author', 'children'),
+        [Input('scatter_plot', 'hoverData')]
+        )
+def update_bookauthor(hoverData):
+    
+    book_number = str(hoverData['points'][0]['text'])[2:7]
+    book_path = join(path, 'DATASET/Collated books v1/')
+    dirlis = sorted(os.listdir(book_path))[1:]
+    for ii in dirlis:
+        if ii.strip('.txt') == book_number:
+            author = data[data.book_code == ii.strip('.txt')]['author'].values[0]
+    return str('Author: ') + author
+
+@app.callback(
+        Output('cat', 'children'),
+        [Input('scatter_plot', 'hoverData')]
+        )
+def update_cat(hoverData):
+    
+    book_number = str(hoverData['points'][0]['text'])[2:7]
+    book_path = join(path, 'DATASET/Collated books v1/')
+    dirlis = sorted(os.listdir(book_path))[1:]
+    for ii in dirlis:
+        if ii.strip('.txt') == book_number:
+            author = data[data.book_code == ii.strip('.txt')]['book_category_name'].values[0]
+    return str('Category: ') + author
     
 @app.callback(
         Output('label', 'children'),
