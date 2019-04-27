@@ -128,13 +128,13 @@ app.layout = html.Div([
         
         html.Div([
                 html.Div([
-                        html.H4(id = 'topic')], style = {'color':' rgb(35, 87, 137)', 'display': 'inline-block'}),
+                        html.H2(id = 'topic')], style = {'color':' rgb(35, 87, 137)', 'display': 'inline-block'}),
                 html.Div([
-                        html.H6(id = 'date')], style = {'color':' black', 'display': 'inline-block'}),
+                        html.Label(id = 'date')], style = {'color':' black', 'font-weight': 'bold'}),
                 html.Label(id = 'label'),
                 ], style= {'width': '74%', 'display': 'inline-block','vertical-align': 'middle', 'font-size': '12px, '}),
         html.Div([
-                html.H6('Digital Book Insight'),
+                html.H2('Topics'),
                 html.Label('Dash is a web application framework that provides pure Python')
                 ], style={'text-align': 'center','width': '25%', 'display': 'inline-block','vertical-align': 'middle'}),
                 ], style={'background-color': 'rgb(204, 230, 244)', 'margin': 'auto', 'width': '100%', 'max-width': '1200px', 'box-sizing': 'border-box', 'height': '30vh'}),
@@ -180,19 +180,28 @@ def update_figure(make_selection, xaxis, yaxis):
         [Input('scatter_plot', 'hoverData')]
         )
 def update_bookheader(hoverData):
-    from nltk.tokenize import RegexpTokenizer
-    tokenizer = RegexpTokenizer(r'\w+')
-    #getting a Nonetype error here
+
     book_number = str(hoverData['points'][0]['text'])[2:7]
     book_path = join(path, 'DATASET/Collated books v1/')
     dirlis = sorted(os.listdir(book_path))[1:]
     for ii in dirlis:
         if ii.strip('.txt') == book_number:
-            with open(book_path + ii) as f:
-                text = f.read().strip()[0:500]
-                text = tokenizer.tokenize(text)
-                subject = text[0]
+            subject = data[data.book_code == ii.strip('.txt')]['book_title'].values[0]
     return subject
+
+@app.callback(
+        Output('date', 'children'),
+        [Input('scatter_plot', 'hoverData')]
+        )
+def update_bookyear(hoverData):
+    
+    book_number = str(hoverData['points'][0]['text'])[2:7]
+    book_path = join(path, 'DATASET/Collated books v1/')
+    dirlis = sorted(os.listdir(book_path))[1:]
+    for ii in dirlis:
+        if ii.strip('.txt') == book_number:
+            subject = data[data.book_code == ii.strip('.txt')]['year_edited'].values[0]
+    return str('YEAR EDITED: ')+ str(subject)
     
 @app.callback(
         Output('label', 'children'),
