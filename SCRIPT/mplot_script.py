@@ -10,6 +10,7 @@ import dash
 import os 
 import nltk
 import json
+import numpy as np
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
@@ -20,6 +21,10 @@ from os.path import join
 from nltk.tokenize import word_tokenize
 french_tok = nltk.data.load('tokenizers/punkt/french.pickle')
 from flask import Flask
+from collections import Counter
+nltk.download('inaugural')
+nltk.download('stopwords')
+from nltk.tokenize import RegexpTokenizer
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 server = Flask(__name__)
@@ -39,26 +44,34 @@ columns = [x for x in data.columns]
 book_path = join(path, 'DATASET/Collated books v1/')
 dirlis = sorted(os.listdir(book_path))[1:]
 
-#%%
-#import gensim
-#from gensim.utils import simple_preprocess
-#from gensim.parsing.preprocessing import STOPWORDS
-#from nltk.stem import WordNetLemmatizer, SnowballStemmer
-#from nltk.stem.porter import *
-#import numpy as np
-#import nltk
-#nltk.download('wordnet')
+#%% MOST FREQUENT WORD IN A DATAPOIN
 
+from sklearn.decomposition import LatentDirichletAllocation
+lda = LatentDirichletAllocation(n_components=9, max_iter=5,
+                                learning_method='online',
+                                learning_offset=50.,
+                                random_state=0)
 
-#from nltk.stem.snowball import FrenchStemmer
-#stemmer = FrenchStemmer()
-#stemmer = SnowballStemmer("english")
-#stemmer.stem(sample)
+from sklearn.feature_extraction.text import CountVectorizer
+n_features = 50
+tf_vectorizer = CountVectorizer(max_df=0.95, min_df=2,
+                                max_features=50,
+                                stop_words='english')
 
-#import spacy
-#import fr_core_news_sm
-#nlp = fr_core_news_sm.load()
-#stac = nlp(sample)
+tf = tf_vectorizer.fit_transform(result)
+tf_feature_names = tf_vectorizer.get_feature_names()
+#tf_feature_names
+lda.fit(tf)
+
+def print_top_words(model, feature_names, n_top_words):
+    for topic_idx, topic in enumerate(model.components_):
+        print("Topic #%d:" % topic_idx)
+        print(" ".join([feature_names[i]
+                        for i in topic.argsort()[:-n_top_words - 1:-1]]))
+    print()
+    
+print_top_words(lda, tf_feature_names, 10)
+
 #%% app
 
 app.layout = html.Div([
@@ -68,7 +81,7 @@ app.layout = html.Div([
                 html.H1('Digital Book Insight'),
                 ], style={'text-align': 'left','width': '49%', 'display': 'inline-block','vertical-align': 'middle'}),
         html.Div([
-                html.H4('Project by Miloskrissak'),
+                html.H4('Project by E. kenneth'),
                 html.Label('NLP with python 3: Topic visualization in intereative chart. Cluster analysis of word corpus using Naive Bayes algorithm. Hover over the data points to see '+
                            'meta data info the respective books.')
                 ], style= {'width': '49%', 'display': 'inline-block','vertical-align': 'middle', 'font-size': '12px'})
@@ -97,14 +110,14 @@ app.layout = html.Div([
                             labelStyle={'display': 'inline-block'}
                             ), 
                     ], style = {'display': 'inline-block', 'width': '25%'}),
-            #--- X-Vals
+            #--- Token length
             html.Div([
-                    html.Label('X-Vals:'),                    
+                    html.Label('Token length:'),                    
                     dcc.RadioItems(
                             #---
-                            id='x-vals',
-                            options = [{'label': i, 'value': i} for i in ['Views', 'Duration']],
-                            value = "Views",
+                            id='tokens',
+                            options = [{'label': i, 'value': i} for i in [str(x) for x in np.arange(5, 11, 1)]],
+                            value = "5",
                             labelStyle={'display': 'inline-block'}
                             ), 
                     ], style = {'display': 'inline-block', 'width': '25%'}),
@@ -140,7 +153,7 @@ app.layout = html.Div([
                     value = [data.year_edited.min(), data.year_edited.max()],
                     marks={str(year): str(year) for year in range(data.year_edited.min(), data.year_edited.max(), 5)}
                 )
-            ], style = {'background-color': 'rgb(204, 230, 244)', 'visibility': 'visible', 'left': '0%', 'width': '49%', 'padding': '0px 20px 20px 20px'}),
+            ], style = {'background-color': 'rgb(204, 230, 244)', 'font-weight': 'bold', 'visibility': 'visible', 'left': '0%', 'width': '49%', 'padding': '0px 20px 20px 20px'}),
     #-- Footer section
     html.Div([
         #--footer section
@@ -181,7 +194,8 @@ def update_figure(make_selection, xaxis, yaxis):
             mode = 'markers',
             opacity = 0.5,
             marker = {'size': 15, 
-                      'opacity': 0.5,
+#                      'color': 'rgba(50, 171, 96, 0.6)',
+                      'opacity': 0.9,
                       'line': {'width': 0.5, 'color': 'white'}},
             )
     
@@ -235,7 +249,7 @@ def update_bookauthor(hoverData):
     for ii in dirlis:
         if ii.strip('.txt') == book_number:
             author = data[data.book_code == ii.strip('.txt')]['author'].values[0]
-    return str('Author: ') + author
+    return str('Author: ') + str(author)
 
 @app.callback(
         Output('cat', 'children'),
@@ -248,8 +262,8 @@ def update_cat(hoverData):
     dirlis = sorted(os.listdir(book_path))[1:]
     for ii in dirlis:
         if ii.strip('.txt') == book_number:
-            author = data[data.book_code == ii.strip('.txt')]['book_category_name'].values[0]
-    return str('Category: ') + author
+            cat = data[data.book_code == ii.strip('.txt')]['book_category_name'].values[0]
+    return str('Category: ') + str(cat)
     
 @app.callback(
         Output('label', 'children'),
@@ -264,18 +278,76 @@ def update_label(hoverData):
     dirlis = sorted(os.listdir(book_path))[1:]
     for ii in dirlis:
         if ii.strip('.txt') == book_number:
-            with open(book_path + ii, 'rU') as f:
+            with open(book_path + ii, 'r') as f:
                 text = f.read().strip()[0:500]
                 text = tokenizer.tokenize(text)
                 text = ' '.join(text)
                 f.close()
     return text
 
+@app.callback(
+        Output('bar_plot', 'figure'),
+        [Input('scatter_plot', 'hoverData'),
+         Input('Sort-Tags', 'value'),
+         Input('tokens', 'value')]
+        )
+def bar_plot(hoverData, sort, token):
+    #--locate book and extract data from drive
+    book_number = str(hoverData['points'][0]['text'])[2:7]
+    book_path = join(path, 'DATASET/Collated books v1/')
+    dirlis = sorted(os.listdir(book_path))[1:]
+    stopwords = set(nltk.corpus.stopwords.words('french'))
+    with_stp = Counter()
+    without_stp  = Counter()
+    result=[]
+    for ii in dirlis:
+        if ii.strip('.txt') == book_number:
+            with open(book_path+ii, 'r') as file:
+                file_dt = file.read()
+                #tokenize and stem
+                tokenizer = RegexpTokenizer(r'\w+')
+                up_text = tokenizer.tokenize(file_dt)
+                #--check size of token
+                for tok in up_text:
+                    if len(tok) > int(token):
+                        result.append(tok)
+                    else:
+                        pass
+            for word in result:
+                # update count off all words in the line that are in stopwords
+                word = word.lower()
+                if word in stopwords:
+                     with_stp.update([word])
+                else:
+                   # update count off all words in the line that are not in stopwords
+                    without_stp.update([word])
+            #--trace 
+            trac_x, trac_y = [], []
+            for w, y in without_stp.most_common(15):
+                trac_x.append(y)
+                trac_y.append(w)
+            trace = go.Bar(
+                    x = trac_x,
+                    y = trac_y,
+                    marker = dict(
+                        color='rgba(50, 171, 96, 0.6)',
+                        line=dict(
+                            color='rgba(50, 171, 96, 1.0)',
+                            width=1),
+                    ),
+                    orientation = 'h',
+                    )
+                   
+            return {'data': [trace],
+                    'layout': go.Layout(
+                            yaxis={'autorange': 'reversed' if sort == 'A-z' else True},
+                            )
+                            
+                    }
+
 
 if __name__ == '__main__':
   app.run_server(debug = True)
-
-
 
 
 
