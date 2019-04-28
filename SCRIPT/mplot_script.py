@@ -46,32 +46,84 @@ dirlis = sorted(os.listdir(book_path))[1:]
 
 #%% MOST FREQUENT WORD IN A DATAPOIN
 
-from sklearn.decomposition import LatentDirichletAllocation
-lda = LatentDirichletAllocation(n_components=9, max_iter=5,
-                                learning_method='online',
-                                learning_offset=50.,
-                                random_state=0)
+#from sklearn.decomposition import LatentDirichletAllocation
+#lda = LatentDirichletAllocation(n_components=9, max_iter=5,
+#                                learning_method='online',
+#                                learning_offset=50.,
+#                                random_state=0)
+#
+#from sklearn.feature_extraction.text import CountVectorizer
+#n_features = 50
+#tf_vectorizer = CountVectorizer(max_df=0.95, min_df=2,
+#                                max_features=50,
+#                                stop_words='english')
+#
+#tf = tf_vectorizer.fit_transform(result)
+#tf_feature_names = tf_vectorizer.get_feature_names()
+##tf_feature_names
+#lda.fit(tf)
+#
+#def print_top_words(model, feature_names, n_top_words):
+#    for topic_idx, topic in enumerate(model.components_):
+#        print("Topic #%d:" % topic_idx)
+#        print(" ".join([feature_names[i]
+#                        for i in topic.argsort()[:-n_top_words - 1:-1]]))
+#    print()
+#    
+#print_top_words(lda, tf_feature_names, 10)
+#%%
+#import gensim
+#from gensim.utils import simple_preprocess
+#from gensim.parsing.preprocessing import STOPWORDS
+#from nltk.stem import WordNetLemmatizer, SnowballStemmer
+#from nltk.stem.porter import *
+#import numpy as np
+#np.random.seed(400)from nltk.tokenize import RegexpTokenizer
+#tokenizer = RegexpTokenizer(r'\w+')
+#import nltk
+#nltk.download('wordnet')
+#
+#import pandas as pd
+#stemmer = WordTokenizer("french")
+#
+#def lemmatize_stemming(text):
+#    return stemmer.stem(WordNetLemmatizer().lemmatize(text, pos='v'))
+#
+## Tokenize and lemmatize
+#def preprocess(text):
+#    result=[]
+#    for token in gensim.utils.simple_preprocess(text) :
+#        if token not in gensim.parsing.preprocessing.STOPWORDS and len(token) > 3:
+#            result.append(lemmatize_stemming(token))
+#            
+#    return result
+#
+#book_path = join(path, 'DATASET/Collated books v1/')
+#dirlis = sorted(os.listdir(book_path))[1:]
+#with open(book_path + dirlis[0], 'r') as f:
+#    text = f.read()
+#    f.close()
+#    
+##words = []
+##for word in text.split(' '):
+##    words.append(word)
+##print(words)
+#print("\n\nTokenized and lemmatized document: ")
+#print(preprocess(text))
+#
+#processed_docs = [x for x in preprocess(text)]
+#dictionary = gensim.corpora.Dictionary(processed_docs)
 
-from sklearn.feature_extraction.text import CountVectorizer
-n_features = 50
-tf_vectorizer = CountVectorizer(max_df=0.95, min_df=2,
-                                max_features=50,
-                                stop_words='english')
 
-tf = tf_vectorizer.fit_transform(result)
-tf_feature_names = tf_vectorizer.get_feature_names()
-#tf_feature_names
-lda.fit(tf)
+#from nltk.stem.snowball import FrenchStemmer
+#stemmer = FrenchStemmer()
+#stemmer = SnowballStemmer("english")
+#stemmer.stem(sample)
 
-def print_top_words(model, feature_names, n_top_words):
-    for topic_idx, topic in enumerate(model.components_):
-        print("Topic #%d:" % topic_idx)
-        print(" ".join([feature_names[i]
-                        for i in topic.argsort()[:-n_top_words - 1:-1]]))
-    print()
-    
-print_top_words(lda, tf_feature_names, 10)
-
+#import spacy
+#import fr_core_news_sm
+#nlp = fr_core_news_sm.load()
+#stac = nlp(sample)
 #%% app
 
 app.layout = html.Div([
@@ -82,8 +134,8 @@ app.layout = html.Div([
                 ], style={'text-align': 'left','width': '49%', 'display': 'inline-block','vertical-align': 'middle'}),
         html.Div([
                 html.H4('Project by E. kenneth'),
-                html.Label('NLP with python 3: Topic visualization in intereative chart. Cluster analysis of word corpus using Naive Bayes algorithm. Hover over the data points to see '+
-                           'meta data info the respective books.')
+                html.Label('NLP with python 3: Topic visualization in intereative chart. Cluster analysis of word corpus using k-means algorithm. Hover over the data points to see '+
+                           'meta data info on respective books.')
                 ], style= {'width': '49%', 'display': 'inline-block','vertical-align': 'middle', 'font-size': '12px'})
                 ], style={'background-color': 'white', 'box-shadow': 'black 0px 1px 0px 0px'}),
     #--scaling section
