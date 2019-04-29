@@ -29,6 +29,12 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 server = Flask(__name__)
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets, server = server)
 
+config={
+        "displaylogo": False,
+        'modeBarButtonsToRemove': ['pan2d','lasso2d', 'hoverClosestCartesian',
+                                   'hoverCompareCartesian', 'toggleSpikelines',
+                                   ]
+    }
 #%% data
 #get file path
 path = '/home/kenneth/Documents/GIT_PROJECTS/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY'
@@ -226,12 +232,15 @@ app.layout = html.Div([
             #visibility: visible; left: 0%; width: 100%
             html.Div([
                     dcc.Graph(id = 'scatter_plot',
+                              config = config,
                               hoverData={'points': [{'customdata': ["06_07", "Paris", "Broussais, F.-J.-V.", "Histoire des phlegmasies ou inflammations chroniques (2 vols.)", 1808]}]}
                               ),
                     ], style = {'display': 'inline-block', 'width': '65%'}),
             #--horizontal dynamic barplot
             html.Div([
-                    dcc.Graph(id = 'bar_plot')
+                    dcc.Graph(id = 'bar_plot',
+                              config = config,
+                              )
                     ], style = {'display': 'inline-block', 'width': '35%'}),
             ]),
     html.Div([
@@ -405,7 +414,7 @@ def bar_plot(hoverData, sort, token):
                 else:
                    # update count off all words in the line that are not in stopwords
                     without_stp.update([word])
-            #--trace 
+            #--trace
             trac_x, trac_y = [], []
             for w, y in without_stp.most_common(15):
                 trac_x.append(y)
@@ -432,8 +441,4 @@ def bar_plot(hoverData, sort, token):
 
 if __name__ == '__main__':
   app.run_server(debug = True)
-
-
-
-
 
