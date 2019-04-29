@@ -43,6 +43,7 @@ columns = [x for x in data.columns]
 #dirlis = sorted(os.listdir(book_path))[1:]
 
 #%% preprocess datasets
+
 def tokenize():
     book_path = join(path, 'DATASET/')
     dirlis = sorted(os.listdir(book_path+'Collated books v1/'))[1:]
@@ -52,13 +53,32 @@ def tokenize():
             #tokenize and stem
             tokenizer = RegexpTokenizer(r'\w+')
             up_text = tokenizer.tokenize(file_dt)
+            file.close()
             if not os.path.exists(join(book_path+'token/', ii.strip('.txt')+str('_new.txt'))):
                 with open(join(book_path+'token/', ii.strip('.txt')+str('_new.txt')), 'w+') as wr:
                     wr.writelines('\n'.join(up_text))
+            
             else:
                 pass
-tokenize()
+#--preprocess
+def preprocess():
+    tokenizer = RegexpTokenizer(r'\w+')
+    book_path = join(path, 'DATASET/')
+    dirlis = sorted(os.listdir(book_path + 'Collated books v1/'))[1:]
+    for ii in dirlis:
+            with open(book_path + 'Collated books v1/' + ii, 'r') as file:
+                text = file.read().strip()[0:500]
+                text = tokenizer.tokenize(text)
+                text = ' '.join(text)
+                file.close()
+                if not os.path.exists(join(book_path+'filtered_book/', ii)):
+                    with open(join(book_path+'filtered_book/', ii), 'w+') as wr:
+                        wr.writelines(text)
+                else:
+                    pass
 
+tokenize()
+preprocess()
 #%% MOST FREQUENT WORD IN A DATAPOIN
 
 #from sklearn.decomposition import LatentDirichletAllocation
@@ -337,19 +357,15 @@ def update_cat(hoverData):
         [Input('scatter_plot', 'hoverData')]
         )
 def update_label(hoverData):
-    from nltk.tokenize import RegexpTokenizer
-    tokenizer = RegexpTokenizer(r'\w+')
-    #getting a Nonetype error here
+    #--
     book_number = str(hoverData['points'][0]['text'])[2:7]
-    book_path = join(path, 'DATASET/Collated books v1/')
-    dirlis = sorted(os.listdir(book_path))[1:]
+    book_path = join(path, 'DATASET/filtered_book/')
+    dirlis = sorted(os.listdir(book_path))
     for ii in dirlis:
         if ii.strip('.txt') == book_number:
-            with open(book_path + ii, 'r') as f:
-                text = f.read().strip()[0:500]
-                text = tokenizer.tokenize(text)
-                text = ' '.join(text)
-                f.close()
+            with open(join(book_path, ii), 'r+') as file:
+                text = file.read()
+                file.close()
     return text
 
 @app.callback(
@@ -361,17 +377,18 @@ def update_label(hoverData):
 def bar_plot(hoverData, sort, token):
     #--locate book and extract data from drive
     book_number = str(hoverData['points'][0]['text'])[2:7]
-    book_path = join(path, 'DATASET/Collated books v1/')
-    dirlis = sorted(os.listdir(book_path))[1:]
+    book_path = join(path, 'DATASET/token/')
+    dirlis = sorted(os.listdir(book_path))
     stopwords = set(nltk.corpus.stopwords.words('french'))
     with_stp = Counter()
     without_stp  = Counter()
     result=[]
     for ii in dirlis:
-        if ii.strip('.txt') == book_number:
-            with open(join(book_path, ii.strip('.txt')+str('_new')), 'r') as wr:
+        if ii.strip('_new.txt') == book_number:
+            with open(join(book_path, ii), 'r+') as wr:
                 file = [wr.strip() for wr in wr.readlines()]
-                for tok in up_text:
+                wr.close()
+                for tok in file:
                     if len(tok) > int(token):
                         result.append(tok)
                     else:
