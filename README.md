@@ -13,12 +13,17 @@ Finally, project is hosted live on heroku.
 
 ## HOW TO USE
 
-```bash
+```python
 git clone https://github.com/kennedyCzar/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY
 ```
 Open the script folder in your terminal and run the following command
-```bash
+
+```python
 python mplot_script.py
+```
+
+```python
+Navigate http://127.0.0.1:8050/ 
 ```
 ![Image 1](https://github.com/kennedyCzar/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY/blob/master/IMAGES/output_u3bjJu.gif)
 
