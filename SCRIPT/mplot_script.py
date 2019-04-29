@@ -399,7 +399,7 @@ def bar_plot(hoverData, sort, token):
                         pass
             for word in result:
                 # update count off all words in the line that are in stopwords
-                word = word.lower()
+#                word = word.lower()
                 if word in stopwords:
                      with_stp.update([word])
                 else:
@@ -411,7 +411,6 @@ def bar_plot(hoverData, sort, token):
                 trac_x.append(y)
                 trac_y.append(w)
             trace = go.Bar(
-                    
                     x = trac_x,
                     y = trac_y,
                     marker = dict(
