@@ -225,7 +225,9 @@ app.layout = html.Div([
             #--scatterplot
             #visibility: visible; left: 0%; width: 100%
             html.Div([
-                    dcc.Graph(id = 'scatter_plot'),
+                    dcc.Graph(id = 'scatter_plot',
+                              hoverData={'points': [{'customdata': ["06_07", "Paris", "Broussais, F.-J.-V.", "Histoire des phlegmasies ou inflammations chroniques (2 vols.)", 1808]}]}
+                              ),
                     ], style = {'display': 'inline-block', 'width': '65%'}),
             #--horizontal dynamic barplot
             html.Div([
@@ -278,6 +280,8 @@ def update_figure(make_selection, xaxis, yaxis):
             y = data_places['book_number'],
             text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
                     data_places['author'], data_places['book_title'] , data_places['year_edited'])],
+            customdata = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
+                    data_places['author'], data_places['book_title'] , data_places['year_edited'])],
             mode = 'markers',
             opacity = 0.5,
             marker = {'size': 15, 
@@ -302,7 +306,7 @@ def update_figure(make_selection, xaxis, yaxis):
         )
 def update_bookheader(hoverData):
 
-    book_number = str(hoverData['points'][0]['text'])[2:7]
+    book_number = hoverData['points'][0]['customdata'][0]
     book_path = join(path, 'DATASET/Collated books v1/')
     dirlis = sorted(os.listdir(book_path))[1:]
     for ii in dirlis:
@@ -316,7 +320,7 @@ def update_bookheader(hoverData):
         )
 def update_bookyear(hoverData):
     
-    book_number = str(hoverData['points'][0]['text'])[2:7]
+    book_number = hoverData['points'][0]['customdata'][0]
     book_path = join(path, 'DATASET/Collated books v1/')
     dirlis = sorted(os.listdir(book_path))[1:]
     for ii in dirlis:
@@ -330,7 +334,7 @@ def update_bookyear(hoverData):
         )
 def update_bookauthor(hoverData):
     
-    book_number = str(hoverData['points'][0]['text'])[2:7]
+    book_number = hoverData['points'][0]['customdata'][0]
     book_path = join(path, 'DATASET/Collated books v1/')
     dirlis = sorted(os.listdir(book_path))[1:]
     for ii in dirlis:
@@ -344,7 +348,7 @@ def update_bookauthor(hoverData):
         )
 def update_cat(hoverData):
     
-    book_number = str(hoverData['points'][0]['text'])[2:7]
+    book_number = hoverData['points'][0]['customdata'][0]
     book_path = join(path, 'DATASET/Collated books v1/')
     dirlis = sorted(os.listdir(book_path))[1:]
     for ii in dirlis:
@@ -358,7 +362,7 @@ def update_cat(hoverData):
         )
 def update_label(hoverData):
     #--
-    book_number = str(hoverData['points'][0]['text'])[2:7]
+    book_number = hoverData['points'][0]['customdata'][0]
     book_path = join(path, 'DATASET/filtered_book/')
     dirlis = sorted(os.listdir(book_path))
     for ii in dirlis:
@@ -376,7 +380,7 @@ def update_label(hoverData):
         )
 def bar_plot(hoverData, sort, token):
     #--locate book and extract data from drive
-    book_number = str(hoverData['points'][0]['text'])[2:7]
+    book_number = hoverData['points'][0]['customdata'][0]
     book_path = join(path, 'DATASET/token/')
     dirlis = sorted(os.listdir(book_path))
     stopwords = set(nltk.corpus.stopwords.words('french'))
@@ -387,7 +391,7 @@ def bar_plot(hoverData, sort, token):
         if ii.strip('_new.txt') == book_number:
             with open(join(book_path, ii), 'r+') as wr:
                 file = [wr.strip() for wr in wr.readlines()]
-                wr.close()
+#                wr.close()
                 for tok in file:
                     if len(tok) > int(token):
                         result.append(tok)
@@ -407,6 +411,7 @@ def bar_plot(hoverData, sort, token):
                 trac_x.append(y)
                 trac_y.append(w)
             trace = go.Bar(
+                    
                     x = trac_x,
                     y = trac_y,
                     marker = dict(
