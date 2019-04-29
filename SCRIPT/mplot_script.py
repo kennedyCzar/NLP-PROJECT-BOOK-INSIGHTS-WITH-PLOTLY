@@ -19,7 +19,6 @@ import plotly.graph_objs as go
 from datetime import datetime
 from os.path import join
 from nltk.tokenize import word_tokenize
-french_tok = nltk.data.load('tokenizers/punkt/french.pickle')
 from flask import Flask
 from collections import Counter
 nltk.download('inaugural')
@@ -31,7 +30,6 @@ server = Flask(__name__)
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets, server = server)
 
 #%% data
-
 #get file path
 path = '/home/kenneth/Documents/GIT_PROJECTS/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY'
 direc = join(path, 'DATASET/')
@@ -41,8 +39,25 @@ columns = [x for x in data.columns]
 
 #-------------------------------
 
-book_path = join(path, 'DATASET/Collated books v1/')
-dirlis = sorted(os.listdir(book_path))[1:]
+#book_path = join(path, 'DATASET/Collated books v1/')
+#dirlis = sorted(os.listdir(book_path))[1:]
+
+#%% preprocess datasets
+def tokenize():
+    book_path = join(path, 'DATASET/')
+    dirlis = sorted(os.listdir(book_path+'Collated books v1/'))[1:]
+    for ii in dirlis:
+        with open(book_path+'Collated books v1/'+ii, 'r+') as file:
+            file_dt = file.read()
+            #tokenize and stem
+            tokenizer = RegexpTokenizer(r'\w+')
+            up_text = tokenizer.tokenize(file_dt)
+            if not os.path.exists(join(book_path+'token/', ii.strip('.txt')+str('_new.txt'))):
+                with open(join(book_path+'token/', ii.strip('.txt')+str('_new.txt')), 'w+') as wr:
+                    wr.writelines('\n'.join(up_text))
+            else:
+                pass
+tokenize()
 
 #%% MOST FREQUENT WORD IN A DATAPOIN
 
@@ -354,12 +369,8 @@ def bar_plot(hoverData, sort, token):
     result=[]
     for ii in dirlis:
         if ii.strip('.txt') == book_number:
-            with open(book_path+ii, 'r') as file:
-                file_dt = file.read()
-                #tokenize and stem
-                tokenizer = RegexpTokenizer(r'\w+')
-                up_text = tokenizer.tokenize(file_dt)
-                #--check size of token
+            with open(join(book_path, ii.strip('.txt')+str('_new')), 'r') as wr:
+                file = [wr.strip() for wr in wr.readlines()]
                 for tok in up_text:
                     if len(tok) > int(token):
                         result.append(tok)
