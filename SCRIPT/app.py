@@ -23,21 +23,19 @@ import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objs as go
 from os.path import join
-french_tok = nltk.data.load('tokenizers/punkt/french.pickle')
 from collections import Counter
 nltk.download('inaugural')
 nltk.download('stopwords')
 from nltk.tokenize import RegexpTokenizer
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-#server = Flask(__name__)
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 
 #%% data
 
 #get file path
-path = '/home/kenneth/Documents/GIT_PROJECTS/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY'
+path = '/app'
 direc = join(path, 'DATASET/')
 data = pd.read_csv(direc + 'collatedsources_v1.csv', sep = ';')
 data.set_index(['ID'], inplace = True)
