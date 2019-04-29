@@ -2,6 +2,5 @@ wordnet
 pros_cons
 reuters
 punkt
-english
 stopwords
 inaugural
