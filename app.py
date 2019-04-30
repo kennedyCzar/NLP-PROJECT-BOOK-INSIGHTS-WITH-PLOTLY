@@ -101,13 +101,15 @@ app.layout = html.Div([
     html.Div([
             #--- x-axis
             html.Div([
-                    html.Label('x-scale:'),                    
-                    dcc.RadioItems(
+#                    html.Label('x-scale:'),
+                    dcc.Dropdown(
                             #---
-                            id='x-items',
-                            options =[{'label': i, 'value': i} for i in ['Linear', 'Log']],
-                            value = "Linear",
-                            labelStyle={'display': 'inline-block'}
+                            id='dd',
+                            style = {'width': '200px',},
+                            options =[{'label': i, 'value': i} for i in list(data.book_category_name.unique())],
+                            value = [],
+                            placeholder = 'Select a category',
+                            multi = True,
                             ), 
                     ], style = {'display': 'inline-block', 'width': '25%'}),
             #--- y-axis
@@ -197,35 +199,59 @@ app.layout = html.Div([
 @app.callback(
         Output('scatter_plot', 'figure'),
         [Input('year-slider', 'value'),
-         Input('x-items', 'value'),
+         Input('dd', 'value'),
          Input('y-items', 'value')])
-def update_figure(make_selection, xaxis, yaxis):
-
+def update_figure(make_selection, drop, yaxis):
     data_places = data[(data.year_edited >= make_selection[0]) & (data.year_edited <= make_selection[1])]
-    traces = go.Scatter(
-            x = data_places['year_edited'],
-            y = data_places.index,
-            text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
-                    data_places['author'], data_places['book_title'] , data_places['year_edited'])],
-            customdata = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
-                    data_places['author'], data_places['book_title'] , data_places['year_edited'])],
-            mode = 'markers',
-            opacity = 0.5,
-            marker = {'size': 15, 
-#                      'color': 'rgba(50, 171, 96, 0.6)',
-                      'opacity': 0.9,
-                      'line': {'width': 0.5, 'color': 'white'}},
-            )
-    
-    return {'data': [traces],
-            'layout': go.Layout(
-                    xaxis={'type': 'linear' if xaxis == 'Linear' else 'log', 'title': 'Book ID'},
-                    yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book number'},
-                    
-                    margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
-                    legend={'x': 0, 'y': 1},
-                    hovermode='closest')
-                    }
+    if drop != []:
+        data_places = data_places[data_places.book_category_name.isin(drop)]
+        traces = go.Scatter(
+                x = data_places['year_edited'],
+                y = data_places.index,
+                text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
+                        data_places['author'], data_places['book_title'] , data_places['year_edited'])],
+                customdata = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
+                        data_places['author'], data_places['book_title'] , data_places['year_edited'])],
+                mode = 'markers',
+                marker = {'size': 15, 
+                          'color': 'rgba(50, 171, 96, 0.6)',
+                          'line': {'width': 0.5, 'color': 'white'}},
+                ) 
+        
+        return {'data': [traces],
+                'layout': go.Layout(
+    #                    xaxis={'type': 'linear' if xaxis == 'Linear' else 'log', 'title': 'Book ID'},
+                        yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book number'},
+                        
+                        margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
+                        legend={'x': 0, 'y': 1},
+                        hovermode='closest')
+                        }
+    else:
+        traces = go.Scatter(
+                x = data_places['year_edited'],
+                y = data_places.index,
+                text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
+                        data_places['author'], data_places['book_title'] , data_places['year_edited'])],
+                customdata = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
+                        data_places['author'], data_places['book_title'] , data_places['year_edited'])],
+                mode = 'markers',
+                opacity = 0.5,
+                marker = {'size': 15, 
+    #                      'color': 'rgba(50, 171, 96, 0.6)',
+                          'opacity': 0.9,
+                          'line': {'width': 0.5, 'color': 'white'}},
+                ) 
+        
+        return {'data': [traces],
+                'layout': go.Layout(
+    #                    xaxis={'type': 'linear' if xaxis == 'Linear' else 'log', 'title': 'Book ID'},
+                        yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book number'},
+                        
+                        margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
+                        legend={'x': 0, 'y': 1},
+                        hovermode='closest')
+                        }
 
 @app.callback(
         Output('topic', 'children'),
@@ -332,13 +358,12 @@ def bar_plot(hoverData, sort, token):
                 else:
                    # update count off all words in the line that are not in stopwords
                     without_stp.update([word])
-            #--trace 
+            #--trace
             trac_x, trac_y = [], []
             for w, y in without_stp.most_common(15):
                 trac_x.append(y)
                 trac_y.append(w)
             trace = go.Bar(
-                    
                     x = trac_x,
                     y = trac_y,
                     marker = dict(
@@ -360,7 +385,6 @@ def bar_plot(hoverData, sort, token):
 
 if __name__ == '__main__':
   app.run_server(debug = True)
-
 
 
 
