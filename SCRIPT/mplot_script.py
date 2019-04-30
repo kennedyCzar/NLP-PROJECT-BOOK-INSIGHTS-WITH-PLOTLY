@@ -29,6 +29,7 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 server = Flask(__name__)
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets, server = server)
 
+#-config tools
 config={
         "displaylogo": False,
         'modeBarButtonsToRemove': ['pan2d','lasso2d', 'hoverClosestCartesian',
@@ -285,8 +286,8 @@ def update_figure(make_selection, xaxis, yaxis):
 
     data_places = data[(data.year_edited >= make_selection[0]) & (data.year_edited <= make_selection[1])]
     traces = go.Scatter(
-            x = data_places.index,
-            y = data_places['book_number'],
+            x = data_places['year_edited'],
+            y = data_places.index,
             text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
                     data_places['author'], data_places['book_title'] , data_places['year_edited'])],
             customdata = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
