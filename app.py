@@ -221,7 +221,7 @@ def update_figure(make_selection, drop, yaxis):
         return {'data': [traces],
                 'layout': go.Layout(
     #                    xaxis={'type': 'linear' if xaxis == 'Linear' else 'log', 'title': 'Book ID'},
-                        yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book number'},
+                        yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book index'},
                         
                         margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                         legend={'x': 0, 'y': 1},
@@ -246,7 +246,7 @@ def update_figure(make_selection, drop, yaxis):
         return {'data': [traces],
                 'layout': go.Layout(
     #                    xaxis={'type': 'linear' if xaxis == 'Linear' else 'log', 'title': 'Book ID'},
-                        yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book number'},
+                        yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book index'},
                         
                         margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                         legend={'x': 0, 'y': 1},
