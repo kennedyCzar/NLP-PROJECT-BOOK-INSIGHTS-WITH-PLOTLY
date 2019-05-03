@@ -320,12 +320,18 @@ def update_figure(make_selection, drop, yaxis):
         traces = []
         for val in drop:
             traces.append(go.Scatter(
-                    x = data_places.loc[data_places['book_category_name'] == val, 'year_edited'],
-                    y = data.loc[data['book_category_name'] == val].index,
-                    text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
-                            data_places['author'], data_places['book_title'] , data_places['year_edited'])],
-                    customdata = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
-                            data_places['author'], data_places['book_title'] , data_places['year_edited'])],
+                    x = data_places.loc[data_places['book_category_name'] == str(val), 'year_edited'],
+                    y = data.loc[data['book_category_name'] == str(val)].index,
+                    text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places.loc[data_places['book_category_name'] == str(val), 'book_code'],\
+                             data_places.loc[data_places['book_category_name'] == str(val), 'place'],\
+                            data_places.loc[data_places['book_category_name'] == str(val), 'author'], \
+                            data_places.loc[data_places['book_category_name'] == str(val), 'book_title'] ,\
+                            data_places.loc[data_places['book_category_name'] == str(val), 'year_edited'])],
+                    customdata = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places.loc[data_places['book_category_name'] == str(val), 'book_code'],\
+                             data_places.loc[data_places['book_category_name'] == str(val), 'place'],\
+                            data_places.loc[data_places['book_category_name'] == str(val), 'author'], \
+                            data_places.loc[data_places['book_category_name'] == str(val), 'book_title'] ,\
+                            data_places.loc[data_places['book_category_name'] == str(val), 'year_edited'])],
                     mode = 'markers',
                     opacity = 0.6,
                     marker = {'size': 15, 
@@ -372,7 +378,6 @@ def update_figure(make_selection, drop, yaxis):
         [Input('scatter_plot', 'hoverData')]
         )
 def update_bookheader(hoverData):
-
     book_number = hoverData['points'][0]['customdata'][0]
     book_path = join(path, 'DATASET/Collated books v1/')
     dirlis = sorted(os.listdir(book_path))[1:]
