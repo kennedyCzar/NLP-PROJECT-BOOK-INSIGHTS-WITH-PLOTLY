@@ -115,18 +115,18 @@ preprocess()
 #print_top_words(lda, tf_feature_names, 10)
 #%%
 #import gensim
-#from gensim.utils import simple_preprocess
-#from gensim.parsing.preprocessing import STOPWORDS
+##from gensim.utils import simple_preprocess
+##from gensim.parsing.preprocessing import STOPWORDS
 #from nltk.stem import WordNetLemmatizer, SnowballStemmer
-#from nltk.stem.porter import *
-#import numpy as np
-#np.random.seed(400)from nltk.tokenize import RegexpTokenizer
-#tokenizer = RegexpTokenizer(r'\w+')
-#import nltk
-#nltk.download('wordnet')
-#
+##from nltk.stem.porter import *
+##import numpy as np
+##np.random.seed(400)from nltk.tokenize import RegexpTokenizer
+##tokenizer = RegexpTokenizer(r'\w+')
+##import nltk
+##nltk.download('wordnet')
+##
 #import pandas as pd
-#stemmer = WordTokenizer("french")
+#stemmer = SnowballStemmer("french")
 #
 #def lemmatize_stemming(text):
 #    return stemmer.stem(WordNetLemmatizer().lemmatize(text, pos='v'))
@@ -140,22 +140,40 @@ preprocess()
 #            
 #    return result
 #
-#book_path = join(path, 'DATASET/Collated books v1/')
-#dirlis = sorted(os.listdir(book_path))[1:]
+#book_path = join(path, 'DATASET/token/')
+#dirlis = sorted(os.listdir(book_path))
+#stopwords = [x for x in nltk.corpus.stopwords.words('french')]
 #with open(book_path + dirlis[0], 'r') as f:
-#    text = f.read()
-#    f.close()
+#    file = [wr.strip() for wr in f.readlines()]
+#    file = [x for x in file if x not in stopwords and len(x)>3]
 #    
 ##words = []
 ##for word in text.split(' '):
 ##    words.append(word)
 ##print(words)
-#print("\n\nTokenized and lemmatized document: ")
-#print(preprocess(text))
+##print("\n\nTokenized and lemmatized document: ")
+##print(preprocess(text))
 #
-#processed_docs = [x for x in preprocess(text)]
+#processed_docs = [file]
+#
+#
 #dictionary = gensim.corpora.Dictionary(processed_docs)
-
+#    
+##dictionary.filter_extremes(no_below=15, no_above=0.1, keep_n= 100000)
+#bow_corpus = [dictionary.doc2bow(doc) for doc in processed_docs]
+#
+#ldamodel = gensim.models.ldamodel.LdaModel(bow_corpus, num_topics=10, id2word = dictionary, passes=20)
+##lda_model =  gensim.models.LdaMulticore(bow_corpus, 
+##                                   num_topics = 8, 
+##                                   id2word = dictionary,                                    
+##                                   passes = 10,
+##                                   workers = 2)
+#
+#print(ldamodel.print_topics(num_topics=10, num_words=4))
+##====================
+#for idx, topic in lda_model.print_topics(-1):
+#    print("Topic: {} \nWords: {}".format(idx, topic ))
+#    print("\n")
 
 #from nltk.stem.snowball import FrenchStemmer
 #stemmer = FrenchStemmer()
@@ -303,8 +321,8 @@ def update_figure(make_selection, drop, yaxis):
         
         return {'data': [traces],
                 'layout': go.Layout(
-    #                    xaxis={'type': 'linear' if xaxis == 'Linear' else 'log', 'title': 'Book ID'},
-                        yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book number'},
+#                        xaxis={'title': 'year'},
+                        yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book index'},
                         
                         margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                         legend={'x': 0, 'y': 1},
@@ -328,8 +346,8 @@ def update_figure(make_selection, drop, yaxis):
         
         return {'data': [traces],
                 'layout': go.Layout(
-    #                    xaxis={'type': 'linear' if xaxis == 'Linear' else 'log', 'title': 'Book ID'},
-                        yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book number'},
+#                        xaxis={'title': 'year'},
+                        yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book index'},
                         
                         margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                         legend={'x': 0, 'y': 1},
@@ -420,8 +438,7 @@ def bar_plot(hoverData, sort, token):
     book_path = join(path, 'DATASET/token/')
     dirlis = sorted(os.listdir(book_path))
     stopwords = set(nltk.corpus.stopwords.words('french'))
-    with_stp = Counter()
-    without_stp  = Counter()
+    freq_word  = Counter()
     result=[]
     for ii in dirlis:
         if ii.strip('_new.txt') == book_number:
@@ -435,15 +452,11 @@ def bar_plot(hoverData, sort, token):
                         pass
             for word in result:
                 # update count off all words in the line that are in stopwords
-#                word = word.lower()
-                if word in stopwords:
-                     with_stp.update([word])
-                else:
-                   # update count off all words in the line that are not in stopwords
-                    without_stp.update([word])
+                if word not in stopwords:
+                    freq_word.update([word])
             #--trace
             trac_x, trac_y = [], []
-            for w, y in without_stp.most_common(15):
+            for w, y in freq_word.most_common(15):
                 trac_x.append(y)
                 trac_y.append(w)
             trace = go.Bar(
