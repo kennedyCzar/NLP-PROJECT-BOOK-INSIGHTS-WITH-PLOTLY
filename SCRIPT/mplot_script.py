@@ -139,7 +139,7 @@ preprocess()
 #            result.append(lemmatize_stemming(token))
 #            
 #    return result
-#
+##
 #book_path = join(path, 'DATASET/token/')
 #dirlis = sorted(os.listdir(book_path))
 #stopwords = [x for x in nltk.corpus.stopwords.words('french')]
@@ -147,9 +147,9 @@ preprocess()
 #    file = [wr.strip() for wr in f.readlines()]
 #    file = [x for x in file if x not in stopwords and len(x)>3]
 #    
-##words = []
-##for word in text.split(' '):
-##    words.append(word)
+#words = []
+#for word in text.split(' '):
+#    words.append(word)
 ##print(words)
 ##print("\n\nTokenized and lemmatized document: ")
 ##print(preprocess(text))
@@ -169,6 +169,18 @@ preprocess()
 ##                                   passes = 10,
 ##                                   workers = 2)
 #
+#lda_train = gensim.models.ldamulticore.LdaMulticore(
+#                           corpus=train_corpus,
+#                           num_topics=20,
+#                           id2word=train_id2word,
+#                           chunksize=100,
+#                           workers=7, # Num. Processing Cores - 1
+#                           passes=50,
+#                           eval_every = 1,
+#                           per_word_topics=True)
+#
+#lda_train.save('lda_train.model')
+#    
 #print(ldamodel.print_topics(num_topics=10, num_words=4))
 ##====================
 #for idx, topic in lda_model.print_topics(-1):
@@ -200,20 +212,6 @@ app.layout = html.Div([
                 ], style={'background-color': 'white', 'box-shadow': 'black 0px 1px 0px 0px'}),
     #--scaling section
     html.Div([
-            #--- x-axis
-            html.Div([
-#                    html.Label('x-scale:'),
-                    dcc.Dropdown(
-                            #---
-                            id='dd',
-                            style = {'width': '200px',},
-                            options =[{'label': i, 'value': i} for i in list(data.book_category_name.unique())],
-                            value = [],
-                            placeholder = 'Select a category',
-                            multi = True,
-                            ), 
-                    ], style = {'display': 'inline-block', 'width': '25%'}),
-            #--- y-axis
             html.Div([
                     html.Label('y-scale:'),                    
                     dcc.RadioItems(
@@ -246,24 +244,36 @@ app.layout = html.Div([
                             labelStyle={'display': 'inline-block'}
                             ), 
                     ], style = {'display': 'inline-block', 'width': '25%'})
-            ], style={'background-color': 'rgb(204, 230, 244)', 'padding': '1rem 0px', 'margin-top': '2px','box-shadow': 'black 0px 0px 1px 0px'}),
+            ], style={'background-color': 'rgb(204, 230, 244)', 'padding': '1rem 0px', 'margin-top': '2px','box-shadow': 'black 0px 0px 1px 0px','vertical-align': 'middle'}),
     #-- Graphs
     html.Div([
+            html.Div([
             #--scatterplot
             #visibility: visible; left: 0%; width: 100%
-            html.Div([
-                    dcc.Graph(id = 'scatter_plot',
-                              config = config,
-                              hoverData={'points': [{'customdata': ["06_07", "Paris", "Broussais, F.-J.-V.", "Histoire des phlegmasies ou inflammations chroniques (2 vols.)", 1808]}]}
-                              ),
-                    ], style = {'display': 'inline-block', 'width': '65%'}),
-            #--horizontal dynamic barplot
-            html.Div([
-                    dcc.Graph(id = 'bar_plot',
-                              config = config,
-                              )
-                    ], style = {'display': 'inline-block', 'width': '35%'}),
-            ]),
+#            html.Div([
+
+                    dcc.Dropdown(
+                        #---
+                        id='dd',
+                        options =[{'label': i, 'value': i} for i in list(data.book_category_name.unique())],
+                        value = [],
+                        placeholder = 'Select a category',
+                        multi = True,
+                        ),
+                   dcc.Graph(id = 'scatter_plot',
+#                              style={'width': '690px', 'height': '395px'},
+                      config = config,
+                      hoverData={'points': [{'customdata': ["06_07", "Paris", "Broussais, F.-J.-V.", "Histoire des phlegmasies ou inflammations chroniques (2 vols.)", 1808]}]}
+                      ),
+#                    ], style = {'display': 'inline-block', 'width': '65%','background-color': 'white'}),
+        
+            ],style = {'display': 'inline-block', 'background-color': 'white', 'width': '65%', 'padding': '0 20','vertical-align': 'middle'}),
+    #--horizontal dynamic barplot
+    html.Div([
+            dcc.Graph(id = 'bar_plot',
+                      config = config,
+                      )
+            ],style = {'display': 'inline-block', 'background-color': 'white', 'width': '35%','vertical-align': 'middle'}),
     html.Div([
             dcc.RangeSlider(
                     id='year-slider',
@@ -271,8 +281,10 @@ app.layout = html.Div([
                     max=data.year_edited.max(),
                     value = [data.year_edited.min(), data.year_edited.max()],
                     marks={str(year): str(year) for year in range(data.year_edited.min(), data.year_edited.max(), 5)}
-                )
-            ], style = {'background-color': 'rgb(204, 230, 244)', 'font-weight': 'bold', 'visibility': 'visible', 'left': '0%', 'width': '49%', 'padding': '0px 20px 20px 20px'}),
+                ),
+            ], style = {'background-color': 'white', 'display': 'inline-block', 'width': '65%', 'padding': '0px 20px 20px 20px','vertical-align': 'middle'}),
+            ], style = {'background-color': 'white','margin': 'auto', 'width': '100%', 'display': 'inline-block'}),
+    
     #-- Footer section
     html.Div([
         #--footer section
@@ -286,7 +298,7 @@ app.layout = html.Div([
                 html.Div([
                         html.Label(id = 'cat')], style = {'color':' black', 'font-weight': 'bold', 'display': 'inline-block', 'padding': '0px 0px 10px 35px'}),
                 html.Label(id = 'label'),
-                ], style= {'width': '74%', 'display': 'inline-block','vertical-align': 'middle', 'font-size': '12px, '}),
+                ], style= {'width': '74%', 'display': 'inline-block','vertical-align': 'middle', 'font-size': '15px'}),
         html.Div([
                 html.H2('Topics'),
                 html.Label('Dash is a web application framework that provides pure Python')
@@ -305,25 +317,27 @@ app.layout = html.Div([
 def update_figure(make_selection, drop, yaxis):
     data_places = data[(data.year_edited >= make_selection[0]) & (data.year_edited <= make_selection[1])]
     if drop != []:
-        data_places = data_places[data_places.book_category_name.isin(drop)]
-        traces = go.Scatter(
-                x = data_places['year_edited'],
-                y = data_places.index,
-                text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
-                        data_places['author'], data_places['book_title'] , data_places['year_edited'])],
-                customdata = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
-                        data_places['author'], data_places['book_title'] , data_places['year_edited'])],
-                mode = 'markers',
-                marker = {'size': 15, 
-                          'color': 'rgba(50, 171, 96, 0.6)',
-                          'line': {'width': 0.5, 'color': 'white'}},
-                ) 
+        traces = []
+        for val in drop:
+            traces.append(go.Scatter(
+                    x = data_places.loc[data_places['book_category_name'] == val, 'year_edited'],
+                    y = data.loc[data['book_category_name'] == val].index,
+                    text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
+                            data_places['author'], data_places['book_title'] , data_places['year_edited'])],
+                    customdata = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
+                            data_places['author'], data_places['book_title'] , data_places['year_edited'])],
+                    mode = 'markers',
+                    opacity = 0.6,
+                    marker = {'size': 15, 
+#                              'color': 'rgba(50, 171, 96, 0.6)',
+                              'line': {'width': 0.5, 'color': 'white'}},
+                    name = val,
+                    ))
         
-        return {'data': [traces],
+        return {'data': traces,
                 'layout': go.Layout(
-#                        xaxis={'title': 'year'},
+                        xaxis={'title': 'year'},
                         yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book index'},
-                        
                         margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                         legend={'x': 0, 'y': 1},
                         hovermode='closest')
@@ -337,16 +351,15 @@ def update_figure(make_selection, drop, yaxis):
                 customdata = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
                         data_places['author'], data_places['book_title'] , data_places['year_edited'])],
                 mode = 'markers',
-                opacity = 0.5,
+                opacity = 0.7,
                 marker = {'size': 15, 
-    #                      'color': 'rgba(50, 171, 96, 0.6)',
                           'opacity': 0.9,
                           'line': {'width': 0.5, 'color': 'white'}},
                 ) 
         
         return {'data': [traces],
                 'layout': go.Layout(
-#                        xaxis={'title': 'year'},
+                        xaxis={'title': 'year'},
                         yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book index'},
                         
                         margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
@@ -466,7 +479,7 @@ def bar_plot(hoverData, sort, token):
                         color='rgba(50, 171, 96, 0.6)',
                         line=dict(
                             color='rgba(50, 171, 96, 1.0)',
-                            width=1),
+                            width=2),
                     ),
                     orientation = 'h',
                     )
@@ -481,4 +494,5 @@ def bar_plot(hoverData, sort, token):
 
 if __name__ == '__main__':
   app.run_server(debug = True)
+
 
