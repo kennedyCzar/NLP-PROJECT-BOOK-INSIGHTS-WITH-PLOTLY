@@ -242,7 +242,7 @@ app.layout = html.Div([
         Output('scatter_plot', 'figure'),
         [Input('year-slider', 'value'),
          Input('dd', 'value'),
-         Input('y-items', 'value'),)
+         Input('y-items', 'value'),])
 #         Input('cluster', 'value')])
 def update_figure(make_selection, drop, yaxis, clust):
     data_places = data[(data.year_edited >= make_selection[0]) & (data.year_edited <= make_selection[1])]
