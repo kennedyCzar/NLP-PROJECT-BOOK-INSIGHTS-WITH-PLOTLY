@@ -342,6 +342,7 @@ def update_figure(make_selection, drop, yaxis):
         
         return {'data': traces,
                 'layout': go.Layout(
+#                        height = 600,
                         xaxis={'title': 'year'},
                         yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book index'},
                         margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
@@ -365,6 +366,7 @@ def update_figure(make_selection, drop, yaxis):
         
         return {'data': [traces],
                 'layout': go.Layout(
+                        height = 600,
                         xaxis={'title': 'year'},
                         yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book index'},
                         
@@ -491,6 +493,16 @@ def bar_plot(hoverData, sort, token):
                    
             return {'data': [trace],
                     'layout': go.Layout(
+                            autosize  =False,
+                            width = 500,
+                            height = 600,
+                            margin=go.layout.Margin(
+                                    l=100,
+                                    r=50,
+                                    b=100,
+                                    t=0,
+                                    pad=4
+                                    ),
                             yaxis={'autorange': 'reversed' if sort == 'A-z' else True},
                             )
                             
