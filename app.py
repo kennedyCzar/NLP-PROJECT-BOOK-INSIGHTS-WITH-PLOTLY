@@ -76,9 +76,9 @@ def tokenize(token_len):
             final = ' '.join(new_words)
             sentence.append(str(final))
     
-    file = pd.DataFrame({'text': sentence, 'category': data.book_category_name.values})
-    file.to_csv(book_path+'ptoken/'+'ptoken.csv')
-    return sentence, file
+#    file = pd.DataFrame({'text': sentence, 'category': data.book_category_name.values})
+#    file.to_csv(book_path+'ptoken/'+'ptoken.csv')
+    return sentence
 
 #--preprocess for brief display
 def preprocess():
