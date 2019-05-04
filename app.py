@@ -17,7 +17,6 @@ import dash_html_components as html
 import plotly.graph_objs as go
 from os.path import join
 from collections import Counter
-nltk.download('inaugural')
 nltk.download('stopwords')
 from nltk.tokenize import RegexpTokenizer
 
@@ -102,18 +101,18 @@ sentences = tokenize(5)
 preprocess()
 
 #%%
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.cluster import KMeans
-
-
-tv = TfidfVectorizer(min_df=0., max_df=1., use_idf=True)
-tv_matrix = tv.fit_transform(sentences)
-tv_matrix = tv_matrix.toarray()
-vocab = tv.get_feature_names()
-
-similarity_matrix = cosine_similarity(tv_matrix)
-similarity_df = pd.DataFrame(similarity_matrix)
+#from sklearn.feature_extraction.text import TfidfVectorizer
+#from sklearn.metrics.pairwise import cosine_similarity
+#from sklearn.cluster import KMeans
+#
+#
+#tv = TfidfVectorizer(min_df=0., max_df=1., use_idf=True)
+#tv_matrix = tv.fit_transform(sentences)
+#tv_matrix = tv_matrix.toarray()
+#vocab = tv.get_feature_names()
+#
+#similarity_matrix = cosine_similarity(tv_matrix)
+#similarity_df = pd.DataFrame(similarity_matrix)
 
 
 #%% app
@@ -243,8 +242,8 @@ app.layout = html.Div([
         Output('scatter_plot', 'figure'),
         [Input('year-slider', 'value'),
          Input('dd', 'value'),
-         Input('y-items', 'value'),
-         Input('cluster', 'value')])
+         Input('y-items', 'value'),)
+#         Input('cluster', 'value')])
 def update_figure(make_selection, drop, yaxis, clust):
     data_places = data[(data.year_edited >= make_selection[0]) & (data.year_edited <= make_selection[1])]
     if drop != []:
@@ -252,7 +251,7 @@ def update_figure(make_selection, drop, yaxis, clust):
         for val in drop:
             traces.append(go.Scatter(
                     x = data_places.loc[data_places['book_category_name'] == str(val), 'year_edited'],
-                    y = similarity_df.iloc[:, 0].values,
+                    y = data.index,
                     text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places.loc[data_places['book_category_name'] == str(val), 'book_code'],\
                              data_places.loc[data_places['book_category_name'] == str(val), 'place'],\
                             data_places.loc[data_places['book_category_name'] == str(val), 'author'], \
@@ -281,12 +280,12 @@ def update_figure(make_selection, drop, yaxis, clust):
                         hovermode='closest')
                         }
     else:
-        km = KMeans(n_clusters = int(clust), init = 'k-means++')
-        km.fit_transform(similarity_df)
-        cluster_labels = km.labels_
+#        km = KMeans(n_clusters = int(clust), init = 'k-means++')
+#        km.fit_transform(similarity_df)
+#        cluster_labels = km.labels_
         traces = go.Scatter(
                 x = data_places['year_edited'],
-                y = similarity_df.iloc[:, 0].values,
+                y = data.index,
                 text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
                         data_places['author'], data_places['book_title'] , data_places['year_edited'])],
                 customdata = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
@@ -295,7 +294,7 @@ def update_figure(make_selection, drop, yaxis, clust):
                 opacity = 0.7,
                 marker = {'size': 15, 
 #                          'opacity': 0.9,
-                          'color': cluster_labels,
+#                          'color': cluster_labels,
                           'line': {'width': .5, 'color': 'white'}},
                 )
         
