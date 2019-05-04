@@ -9,14 +9,11 @@ import pandas as pd
 import dash
 import os 
 import nltk
-import json
 import numpy as np
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
-from datetime import datetime as dt
 import plotly.graph_objs as go
-from datetime import datetime
 from os.path import join
 from nltk.tokenize import word_tokenize
 from flask import Flask
@@ -51,9 +48,11 @@ columns = [x for x in data.columns]
 
 #%% preprocess datasets
 
-def tokenize():
+def tokenize(token_len):
     book_path = join(path, 'DATASET/')
     dirlis = sorted(os.listdir(book_path+'Collated books v1/'))[1:]
+    stopwords = set(nltk.corpus.stopwords.words('french'))
+    sentence = []
     for ii in dirlis:
         with open(book_path+'Collated books v1/'+ii, 'r+') as file:
             file_dt = file.read()
@@ -61,13 +60,32 @@ def tokenize():
             tokenizer = RegexpTokenizer(r'\w+')
             up_text = tokenizer.tokenize(file_dt)
             file.close()
+            #--unprocessed tokens
             if not os.path.exists(join(book_path+'token/', ii.strip('.txt')+str('_new.txt'))):
-                with open(join(book_path+'token/', ii.strip('.txt')+str('_new.txt')), 'w+') as wr:
+                with open(join(book_path+'token/', ii.strip('.txt')+str('_new.txt')), 'w') as wr:
                     wr.writelines('\n'.join(up_text))
-            
             else:
                 pass
-#--preprocess
+            #--processed tokens
+            new_token = []
+            new_words = [ii for ii in up_text if len(ii) >= int(token_len)]
+#            for ij in up_text:
+#                if len(ij) >= int(token_len):
+#                    new_token.append(ij)
+#                else:
+#                    pass
+            for each_word in new_token:
+                each_word = each_word.lower()
+                if each_word not in stopwords:
+                    new_words.append(each_word)
+            final = ' '.join(new_words)
+            sentence.append(str(final))
+    
+    file = pd.DataFrame({'text': sentence, 'category': data.book_category_name.values})
+    file.to_csv(book_path+'ptoken/'+'ptoken.csv')
+    return sentence, file
+
+#--preprocess for brief display
 def preprocess():
     tokenizer = RegexpTokenizer(r'\w+')
     book_path = join(path, 'DATASET/')
@@ -84,8 +102,44 @@ def preprocess():
                 else:
                     pass
 
-tokenize()
+
+sentences, file_dt = tokenize(5)
 preprocess()
+
+#%%
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.cluster import KMeans
+
+
+tv = TfidfVectorizer(min_df=0., max_df=1., use_idf=True)
+tv_matrix = tv.fit_transform(sentences)
+tv_matrix = tv_matrix.toarray()
+vocab = tv.get_feature_names()
+
+similarity_matrix = cosine_similarity(tv_matrix)
+similarity_df = pd.DataFrame(similarity_matrix)
+
+km = KMeans(n_clusters=3, init = 'k-means++')
+km.fit_transform(similarity_df)
+cluster_labels = km.labels_
+
+
+#sse = []
+#for ii in range(2, 15):
+#    kmeanModel = KMeans(n_clusters=ii)
+#    kmeanModel.fit_transform(similarity_df)
+##    centers = kmeanModel.cluster_centers_
+#    sse.append(silhouette_score(similarity_matrix, kmeanModel.labels_))
+##    sse.append(y_means.inertia_)
+##    print('cluster = %s, score = %s'%(ii, score))
+#    
+## Plot the elbow
+#plt.plot(range(2, 15), sse, 'bx-')
+#plt.xlabel('k- clusters')
+#plt.ylabel('wsse')
+#plt.title('Elbow method')
+#plt.show()
 #%% MOST FREQUENT WORD IN A DATAPOIN
 
 #from sklearn.decomposition import LatentDirichletAllocation
@@ -196,6 +250,11 @@ preprocess()
 #import fr_core_news_sm
 #nlp = fr_core_news_sm.load()
 #stac = nlp(sample)
+#%% DOCUMENT SIMILARITY
+
+
+
+
 #%% app
 
 app.layout = html.Div([
@@ -212,6 +271,16 @@ app.layout = html.Div([
                 ], style={'background-color': 'white', 'box-shadow': 'black 0px 1px 0px 0px'}),
     #--scaling section
     html.Div([
+            html.Div([
+                    html.Label('Cluster size: Default is optimum'),                    
+                    dcc.RadioItems(
+                            #---
+                            id='cluster',
+                            options = [{'label': i, 'value': i} for i in [str(x) for x in np.arange(2, 6, 1)]],
+                            value = "3",
+                            labelStyle={'display': 'inline-block'}
+                            ), 
+                    ], style = {'display': 'inline-block', 'width': '25%'}),
             html.Div([
                     html.Label('y-scale:'),                    
                     dcc.RadioItems(
@@ -313,15 +382,16 @@ app.layout = html.Div([
         Output('scatter_plot', 'figure'),
         [Input('year-slider', 'value'),
          Input('dd', 'value'),
-         Input('y-items', 'value')])
-def update_figure(make_selection, drop, yaxis):
+         Input('y-items', 'value'),
+         Input('cluster', 'value')])
+def update_figure(make_selection, drop, yaxis, clust):
     data_places = data[(data.year_edited >= make_selection[0]) & (data.year_edited <= make_selection[1])]
     if drop != []:
         traces = []
         for val in drop:
             traces.append(go.Scatter(
                     x = data_places.loc[data_places['book_category_name'] == str(val), 'year_edited'],
-                    y = data.loc[data['book_category_name'] == str(val)].index,
+                    y = similarity_df.iloc[:, 0].values,
                     text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places.loc[data_places['book_category_name'] == str(val), 'book_code'],\
                              data_places.loc[data_places['book_category_name'] == str(val), 'place'],\
                             data_places.loc[data_places['book_category_name'] == str(val), 'author'], \
@@ -344,15 +414,18 @@ def update_figure(make_selection, drop, yaxis):
                 'layout': go.Layout(
 #                        height = 600,
                         xaxis={'title': 'year'},
-                        yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book index'},
+                        yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Similarity score'},
                         margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                         legend={'x': 0, 'y': 1},
                         hovermode='closest')
                         }
     else:
+        km = KMeans(n_clusters = int(clust), init = 'k-means++')
+        km.fit_transform(similarity_df)
+        cluster_labels = km.labels_
         traces = go.Scatter(
                 x = data_places['year_edited'],
-                y = data_places.index,
+                y = similarity_df.iloc[:, 0].values,
                 text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
                         data_places['author'], data_places['book_title'] , data_places['year_edited'])],
                 customdata = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
@@ -360,15 +433,16 @@ def update_figure(make_selection, drop, yaxis):
                 mode = 'markers',
                 opacity = 0.7,
                 marker = {'size': 15, 
-                          'opacity': 0.9,
-                          'line': {'width': 0.5, 'color': 'white'}},
-                ) 
+#                          'opacity': 0.9,
+                          'color': cluster_labels,
+                          'line': {'width': .5, 'color': 'white'}},
+                )
         
         return {'data': [traces],
                 'layout': go.Layout(
                         height = 600,
                         xaxis={'title': 'year'},
-                        yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Book index'},
+                        yaxis={'type': 'linear' if yaxis == 'Linear' else 'log','title': 'Similarity score'},
                         
                         margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
                         legend={'x': 0, 'y': 1},
