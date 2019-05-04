@@ -1,6 +1,1 @@
-wordnet
-pros_cons
-reuters
-punkt
 stopwords
-inaugural
