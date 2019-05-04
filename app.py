@@ -98,7 +98,7 @@ def preprocess():
                     pass
 
 
-sentences, file_dt = tokenize(5)
+sentences = tokenize(5)
 preprocess()
 
 #%%
