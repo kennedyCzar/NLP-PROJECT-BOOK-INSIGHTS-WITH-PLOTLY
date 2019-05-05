@@ -9,13 +9,13 @@ import pandas as pd
 import dash
 import os 
 import nltk
+import random
 import numpy as np
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objs as go
 from os.path import join
-from nltk.tokenize import word_tokenize
 from flask import Flask
 from collections import Counter
 from nltk.tokenize import RegexpTokenizer
@@ -31,6 +31,8 @@ config={
                                    'hoverCompareCartesian', 'toggleSpikelines',
                                    ]
     }
+
+
 #%% data
 #get file path
 path = '/home/kenneth/Documents/GIT_PROJECTS/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY'
@@ -39,6 +41,9 @@ data = pd.read_csv(direc + 'collatedsources_v1.csv', sep = ';')
 data.set_index(['ID'], inplace = True)
 columns = [x for x in data.columns]
 
+#load stopwords from drive
+with open(join(path, 'stopwords'), 'r+') as st:
+    stopwords = [x for x in st.read().split()]
 #-------------------------------
 
 #book_path = join(path, 'DATASET/Collated books v1/')
@@ -73,31 +78,35 @@ def tokenize(token_len):
                     new_words.append(each_word)
             final = ' '.join(new_words)
             sentence.append(str(final))
-    
-#    file = pd.DataFrame({'text': sentence, 'category': data.book_category_name.values})
-#    file.to_csv(book_path+'ptoken/'+'ptoken.csv')
-    return sentence
+    #--save files to directory
+    if not os.path.exists(join(book_path, 'ptoken/ptoken.csv.gz')):
+        file = pd.DataFrame({'text': sentence})
+        file.to_csv(book_path+'ptoken/'+'ptoken.csv.gz',
+                    compression='gzip')
 
-#--preprocess for brief display
+
+
+#--preprocessing for brief display
 def preprocess():
     tokenizer = RegexpTokenizer(r'\w+')
     book_path = join(path, 'DATASET/')
     dirlis = sorted(os.listdir(book_path + 'Collated books v1/'))[1:]
     for ii in dirlis:
-            with open(book_path + 'Collated books v1/' + ii, 'r') as file:
-                text = file.read().strip()[0:500]
-                text = tokenizer.tokenize(text)
-                text = ' '.join(text)
-                file.close()
-                if not os.path.exists(join(book_path+'filtered_book/', ii)):
-                    with open(join(book_path+'filtered_book/', ii), 'w+') as wr:
-                        wr.writelines(text)
-                else:
-                    pass
+        with open(book_path + 'Collated books v1/' + ii, 'r') as file:
+            text = file.read().strip()[0:500]
+            text = tokenizer.tokenize(text)
+            text = ' '.join(text)
+            file.close()
+            if not os.path.exists(join(book_path+'filtered_book/', ii)):
+                with open(join(book_path+'filtered_book/', ii), 'w+') as wr:
+                    wr.writelines(text)
+            else:
+                pass
 
 
-sentences = tokenize(5)
+tokenize(5)
 preprocess()
+sentences = list(pd.read_csv(join(path, 'DATASET/ptoken/ptoken.csv.gz'), compression='gzip')['text'])
 
 #%%
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -116,8 +125,8 @@ similarity_df = pd.DataFrame(similarity_matrix)
 
 
 
-#topic modeling
-#lda = LatentDirichletAllocation(n_components=2, max_iter=2, random_state=42)
+##topic modeling
+#lda = LatentDirichletAllocation(n_components=2, max_iter=2, random_state=0)
 #dt_matrix = lda.fit_transform(tv_matrix)
 #features = pd.DataFrame(dt_matrix, columns=['T1', 'T2'])
 #tt_matrix = lda.components_
@@ -125,140 +134,33 @@ similarity_df = pd.DataFrame(similarity_matrix)
 #for topic_weights in tt_matrix:
 #    topic = [(token, weight) for token, weight in zip(vocab, topic_weights)]
 #    topic = sorted(topic, key=lambda x: -x[1])
-#    topic = [item for item in topic if item[1] > 0.8]
+#    topic = [item for item in topic if item[1] > 0.9]
 #    print(topic)
 #    print()
 
-#sse = []
-#for ii in range(2, 15):
-#    kmeanModel = KMeans(n_clusters=ii)
-#    kmeanModel.fit_transform(similarity_df)
-##    centers = kmeanModel.cluster_centers_
-#    sse.append(silhouette_score(similarity_matrix, kmeanModel.labels_))
-##    sse.append(y_means.inertia_)
-##    print('cluster = %s, score = %s'%(ii, score))
-#    
-## Plot the elbow
-#plt.plot(range(2, 15), sse, 'bx-')
-#plt.xlabel('k- clusters')
-#plt.ylabel('wsse')
-#plt.title('Elbow method')
-#plt.show()
-#%% MOST FREQUENT WORD IN A DATAPOIN
 
-#from sklearn.decomposition import LatentDirichletAllocation
-#lda = LatentDirichletAllocation(n_components=9, max_iter=5,
-#                                learning_method='online',
-#                                learning_offset=50.,
-#                                random_state=0)
-#
-#from sklearn.feature_extraction.text import CountVectorizer
-#n_features = 50
-#tf_vectorizer = CountVectorizer(max_df=0.95, min_df=2,
-#                                max_features=50,
-#                                stop_words='english')
-#
-#tf = tf_vectorizer.fit_transform(result)
-#tf_feature_names = tf_vectorizer.get_feature_names()
-##tf_feature_names
-#lda.fit(tf)
-#
-#def print_top_words(model, feature_names, n_top_words):
-#    for topic_idx, topic in enumerate(model.components_):
-#        print("Topic #%d:" % topic_idx)
-#        print(" ".join([feature_names[i]
-#                        for i in topic.argsort()[:-n_top_words - 1:-1]]))
-#    print()
-#    
-#print_top_words(lda, tf_feature_names, 10)
 #%%
-#import gensim
-##from gensim.utils import simple_preprocess
-##from gensim.parsing.preprocessing import STOPWORDS
-#from nltk.stem import WordNetLemmatizer, SnowballStemmer
-##from nltk.stem.porter import *
-##import numpy as np
-##np.random.seed(400)from nltk.tokenize import RegexpTokenizer
-##tokenizer = RegexpTokenizer(r'\w+')
-##import nltk
-##nltk.download('wordnet')
-##
-#import pandas as pd
-#stemmer = SnowballStemmer("french")
-#
-#def lemmatize_stemming(text):
-#    return stemmer.stem(WordNetLemmatizer().lemmatize(text, pos='v'))
-#
-## Tokenize and lemmatize
-#def preprocess(text):
-#    result=[]
-#    for token in gensim.utils.simple_preprocess(text) :
-#        if token not in gensim.parsing.preprocessing.STOPWORDS and len(token) > 3:
-#            result.append(lemmatize_stemming(token))
-#            
-#    return result
-##
+
+
 #book_path = join(path, 'DATASET/token/')
 #dirlis = sorted(os.listdir(book_path))
-#stopwords = [x for x in nltk.corpus.stopwords.words('french')]
-#with open(book_path + dirlis[0], 'r') as f:
+#with open(book_path + dirlis[1], 'r') as f:
 #    file = [wr.strip() for wr in f.readlines()]
 #    file = [x for x in file if x not in stopwords and len(x)>3]
 #    
-#words = []
-#for word in text.split(' '):
-#    words.append(word)
-##print(words)
-##print("\n\nTokenized and lemmatized document: ")
-##print(preprocess(text))
-#
+#words = [x.lower() for x in file]
 #processed_docs = [file]
-#
-#
 #dictionary = gensim.corpora.Dictionary(processed_docs)
-#    
-##dictionary.filter_extremes(no_below=15, no_above=0.1, keep_n= 100000)
 #bow_corpus = [dictionary.doc2bow(doc) for doc in processed_docs]
 #
-#ldamodel = gensim.models.ldamodel.LdaModel(bow_corpus, num_topics=10, id2word = dictionary, passes=20)
-##lda_model =  gensim.models.LdaMulticore(bow_corpus, 
-##                                   num_topics = 8, 
-##                                   id2word = dictionary,                                    
-##                                   passes = 10,
-##                                   workers = 2)
+#ldamodel = gensim.models.ldamodel.LdaModel(bow_corpus, num_topics=1, id2word = dictionary, passes=1)
 #
-#lda_train = gensim.models.ldamulticore.LdaMulticore(
-#                           corpus=train_corpus,
-#                           num_topics=20,
-#                           id2word=train_id2word,
-#                           chunksize=100,
-#                           workers=7, # Num. Processing Cores - 1
-#                           passes=50,
-#                           eval_every = 1,
-#                           per_word_topics=True)
-#
-#lda_train.save('lda_train.model')
-#    
-#print(ldamodel.print_topics(num_topics=10, num_words=4))
-##====================
-#for idx, topic in lda_model.print_topics(-1):
-#    print("Topic: {} \nWords: {}".format(idx, topic ))
-#    print("\n")
-
-#from nltk.stem.snowball import FrenchStemmer
-#stemmer = FrenchStemmer()
-#stemmer = SnowballStemmer("english")
-#stemmer.stem(sample)
-
-#import spacy
-#import fr_core_news_sm
-#nlp = fr_core_news_sm.load()
-#stac = nlp(sample)
-#%% DOCUMENT SIMILARITY
-
-
-
-
+#for _, topic in ldamodel.show_topics(formatted=False, num_words= 10):
+#    result = [w[0] for w in topic if w[0] not in stopwords]
+#    result = ','.join(result)
+    
+    
+    
 #%% app
 
 app.layout = html.Div([
@@ -284,7 +186,17 @@ app.layout = html.Div([
                             value = "3",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '25%'}),
+                    ], style = {'display': 'inline-block', 'width': '20%'}),
+            html.Div([
+                    html.Label('Number of Topics:'),                    
+                    dcc.RadioItems(
+                            #---
+                            id='topic-number',
+                            options = [{'label': i, 'value': i} for i in [str(x) for x in np.arange(5, 11, 1)]],
+                            value = "5",
+                            labelStyle={'display': 'inline-block'}
+                            ), 
+                    ], style = {'display': 'inline-block', 'width': '20%'}),
             html.Div([
                     html.Label('y-scale:'),                    
                     dcc.RadioItems(
@@ -294,7 +206,7 @@ app.layout = html.Div([
                             value = "Linear",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '25%'}),
+                    ], style = {'display': 'inline-block', 'width': '20%'}),
             #--- Token length
             html.Div([
                     html.Label('Token length:'),                    
@@ -305,7 +217,7 @@ app.layout = html.Div([
                             value = "5",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '25%'}),
+                    ], style = {'display': 'inline-block', 'width': '20%'}),
             #--- Sort Tags
             html.Div([
                     html.Label('Sort Tags'),                    
@@ -316,7 +228,7 @@ app.layout = html.Div([
                             value = "A-z",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '25%'})
+                    ], style = {'display': 'inline-block', 'width': '20%'})
             ], style={'background-color': 'rgb(204, 230, 244)', 'padding': '1rem 0px', 'margin-top': '2px','box-shadow': 'black 0px 0px 1px 0px','vertical-align': 'middle'}),
     #-- Graphs
     html.Div([
@@ -370,7 +282,7 @@ app.layout = html.Div([
                 ], style= {'width': '74%', 'display': 'inline-block','vertical-align': 'middle', 'font-size': '15px'}),
         html.Div([
                 html.H2('Topics'),
-                html.Label('Dash is a web application framework that provides pure Python')
+                html.Label(id = 'topic-tags', style={'text-align': 'center', 'margin': 'auto', 'vertical-align': 'middle'})
                 ], style={'text-align': 'center','width': '25%', 'display': 'inline-block','vertical-align': 'middle'}),
                 ], style={'background-color': 'rgb(204, 230, 244)', 'margin': 'auto', 'width': '100%', 'max-width': '1200px', 'box-sizing': 'border-box', 'height': '30vh'}),
     #---
@@ -523,6 +435,35 @@ def update_label(hoverData):
     return text
 
 @app.callback(
+        Output('topic-tags', 'children'),
+        [Input('scatter_plot', 'hoverData'),
+         Input('tokens', 'value'),
+         Input('topic-number', 'value')]
+        )
+def topic_tags(hoverData, token, topic):
+    #--
+    book_number = hoverData['points'][0]['customdata'][0]
+    book_path = join(path, 'DATASET/token/')
+    dirlis = sorted(os.listdir(book_path))
+    topic_counter = Counter()
+    for ii in dirlis:
+        if ii.strip('_new.txt') == book_number:
+            with open(join(book_path, ii), 'r+') as f:
+                file = [wr.strip() for wr in f.readlines()]
+                file = [x for x in file if x not in stopwords and len(x) >= int(token)]
+            #--extract topic words
+            words = [x.lower() for x in file]
+            for ii in words:
+                topic_counter.update([ii])
+            rand_wd = []
+            rand_cnt = []
+            for w, y in topic_counter.most_common(30):
+                rand_wd.append(w)
+                rand_cnt.append(y)
+            result = ','.join(random.sample(rand_wd, int(topic)))
+    return result
+
+@app.callback(
         Output('bar_plot', 'figure'),
         [Input('scatter_plot', 'hoverData'),
          Input('Sort-Tags', 'value'),
@@ -533,7 +474,6 @@ def bar_plot(hoverData, sort, token):
     book_number = hoverData['points'][0]['customdata'][0]
     book_path = join(path, 'DATASET/token/')
     dirlis = sorted(os.listdir(book_path))
-    stopwords = set(nltk.corpus.stopwords.words('french'))
     freq_word  = Counter()
     result=[]
     for ii in dirlis:

@@ -10,19 +10,20 @@ import pandas as pd
 import dash
 import os 
 import nltk
+import random
 import numpy as np
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objs as go
 from os.path import join
+from flask import Flask
 from collections import Counter
-nltk.download('stopwords')
 from nltk.tokenize import RegexpTokenizer
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-server = app.server
+server = Flask(__name__)
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets, server = server)
 
 #-config tools
 config={
@@ -31,6 +32,8 @@ config={
                                    'hoverCompareCartesian', 'toggleSpikelines',
                                    ]
     }
+
+
 #%% data
 
 #get file path
@@ -40,6 +43,11 @@ data = pd.read_csv(direc + 'collatedsources_v1.csv', sep = ';')
 data.set_index(['ID'], inplace = True)
 columns = [x for x in data.columns]
 
+
+#load stopwords from drive
+with open(join(path, 'stopwords'), 'r+') as st:
+    stopwords = [x for x in st.read().split()]
+    
 #-------------------------------
 
 book_path = join(path, 'DATASET/Collated books v1/')
@@ -74,45 +82,51 @@ def tokenize(token_len):
                     new_words.append(each_word)
             final = ' '.join(new_words)
             sentence.append(str(final))
-    
-#    file = pd.DataFrame({'text': sentence, 'category': data.book_category_name.values})
-#    file.to_csv(book_path+'ptoken/'+'ptoken.csv')
-    return sentence
+    #--save files to directory
+    if not os.path.exists(join(book_path, 'ptoken/ptoken.csv.gz')):
+        file = pd.DataFrame({'text': sentence})
+        file.to_csv(book_path+'ptoken/'+'ptoken.csv.gz',
+                    compression='gzip')
 
-#--preprocess for brief display
+
+
+#--preprocessing for brief display
 def preprocess():
     tokenizer = RegexpTokenizer(r'\w+')
     book_path = join(path, 'DATASET/')
     dirlis = sorted(os.listdir(book_path + 'Collated books v1/'))[1:]
     for ii in dirlis:
-            with open(book_path + 'Collated books v1/' + ii, 'r') as file:
-                text = file.read().strip()[0:500]
-                text = tokenizer.tokenize(text)
-                text = ' '.join(text)
-                file.close()
-                if not os.path.exists(join(book_path+'filtered_book/', ii)):
-                    with open(join(book_path+'filtered_book/', ii), 'w+') as wr:
-                        wr.writelines(text)
-                else:
-                    pass
+        with open(book_path + 'Collated books v1/' + ii, 'r') as file:
+            text = file.read().strip()[0:500]
+            text = tokenizer.tokenize(text)
+            text = ' '.join(text)
+            file.close()
+            if not os.path.exists(join(book_path+'filtered_book/', ii)):
+                with open(join(book_path+'filtered_book/', ii), 'w+') as wr:
+                    wr.writelines(text)
+            else:
+                pass
 
 
-sentences = tokenize(5)
+tokenize(5)
 preprocess()
+sentences = list(pd.read_csv(join(path, 'DATASET/ptoken/ptoken.csv.gz'), compression='gzip')['text'])
 
 #%%
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+from sklearn.decomposition import LatentDirichletAllocation
 
-
-tv = TfidfVectorizer(min_df=0., max_df=1., use_idf=True)
+tv = TfidfVectorizer(min_df=5, use_idf=True)
 tv_matrix = tv.fit_transform(sentences)
 tv_matrix = tv_matrix.toarray()
 vocab = tv.get_feature_names()
 
 similarity_matrix = cosine_similarity(tv_matrix)
 similarity_df = pd.DataFrame(similarity_matrix)
+
 
 
 #%% app
@@ -136,11 +150,21 @@ app.layout = html.Div([
                     dcc.RadioItems(
                             #---
                             id='cluster',
-                            options = [{'label': i, 'value': i} for i in [str(x) for x in np.arange(2, 6, 1)]],
+                            options = [{'label': i, 'value': i} for i in [str(x) for x in np.arange(2, 7, 1)]],
                             value = "3",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '25%'}),
+                    ], style = {'display': 'inline-block', 'width': '20%'}),
+            html.Div([
+                    html.Label('Number of Topics:'),                    
+                    dcc.RadioItems(
+                            #---
+                            id='topic-number',
+                            options = [{'label': i, 'value': i} for i in [str(x) for x in np.arange(5, 11, 1)]],
+                            value = "5",
+                            labelStyle={'display': 'inline-block'}
+                            ), 
+                    ], style = {'display': 'inline-block', 'width': '20%'}),
             html.Div([
                     html.Label('y-scale:'),                    
                     dcc.RadioItems(
@@ -150,7 +174,7 @@ app.layout = html.Div([
                             value = "Linear",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '25%'}),
+                    ], style = {'display': 'inline-block', 'width': '20%'}),
             #--- Token length
             html.Div([
                     html.Label('Token length:'),                    
@@ -161,7 +185,7 @@ app.layout = html.Div([
                             value = "5",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '25%'}),
+                    ], style = {'display': 'inline-block', 'width': '20%'}),
             #--- Sort Tags
             html.Div([
                     html.Label('Sort Tags'),                    
@@ -172,15 +196,11 @@ app.layout = html.Div([
                             value = "A-z",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '25%'})
+                    ], style = {'display': 'inline-block', 'width': '20%'})
             ], style={'background-color': 'rgb(204, 230, 244)', 'padding': '1rem 0px', 'margin-top': '2px','box-shadow': 'black 0px 0px 1px 0px','vertical-align': 'middle'}),
     #-- Graphs
     html.Div([
             html.Div([
-            #--scatterplot
-            #visibility: visible; left: 0%; width: 100%
-#            html.Div([
-
                     dcc.Dropdown(
                         #---
                         id='dd',
@@ -230,7 +250,7 @@ app.layout = html.Div([
                 ], style= {'width': '74%', 'display': 'inline-block','vertical-align': 'middle', 'font-size': '15px'}),
         html.Div([
                 html.H2('Topics'),
-                html.Label('Dash is a web application framework that provides pure Python')
+                html.Label(id = 'topic-tags', style={'text-align': 'center', 'margin': 'auto', 'vertical-align': 'middle'}),
                 ], style={'text-align': 'center','width': '25%', 'display': 'inline-block','vertical-align': 'middle'}),
                 ], style={'background-color': 'rgb(204, 230, 244)', 'margin': 'auto', 'width': '100%', 'max-width': '1200px', 'box-sizing': 'border-box', 'height': '30vh'}),
     #---
@@ -249,7 +269,7 @@ def update_figure(make_selection, drop, yaxis, clust):
     if drop != []:
         traces = []
         for val in drop:
-            traces.append(go.Scatter(
+            traces.append(go.Scattergl(
                     x = data_places.loc[data_places['book_category_name'] == str(val), 'year_edited'],
                     y = similarity_df.iloc[:, 0].values,
                     text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places.loc[data_places['book_category_name'] == str(val), 'book_code'],\
@@ -280,10 +300,11 @@ def update_figure(make_selection, drop, yaxis, clust):
                         hovermode='closest')
                         }
     else:
-        km = KMeans(n_clusters = int(clust), init = 'k-means++')
+        pca = PCA(n_components = int(clust)).fit(similarity_df)
+        km = KMeans(n_clusters = int(clust), init = pca.components_, n_init = 1)
         km.fit_transform(similarity_df)
         cluster_labels = km.labels_
-        traces = go.Scatter(
+        traces = go.Scattergl(
                 x = data_places['year_edited'],
                 y = similarity_df.iloc[:, 0].values,
                 text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
@@ -295,6 +316,7 @@ def update_figure(make_selection, drop, yaxis, clust):
                 marker = {'size': 15, 
 #                          'opacity': 0.9,
                           'color': cluster_labels,
+                          'colorscale':'Viridis',
                           'line': {'width': .5, 'color': 'white'}},
                 )
         
@@ -381,6 +403,35 @@ def update_label(hoverData):
     return text
 
 @app.callback(
+        Output('topic-tags', 'children'),
+        [Input('scatter_plot', 'hoverData'),
+         Input('tokens', 'value'),
+         Input('topic-number', 'value')]
+        )
+def topic_tags(hoverData, token, topic):
+    #--
+    book_number = hoverData['points'][0]['customdata'][0]
+    book_path = join(path, 'DATASET/token/')
+    dirlis = sorted(os.listdir(book_path))
+    topic_counter = Counter()
+    for ii in dirlis:
+        if ii.strip('_new.txt') == book_number:
+            with open(join(book_path, ii), 'r+') as f:
+                file = [wr.strip() for wr in f.readlines()]
+                file = [x for x in file if x not in stopwords and len(x) >= int(token)]
+            #--extract topic words
+            words = [x.lower() for x in file]
+            for ii in words:
+                topic_counter.update([ii])
+            rand_wd = []
+            rand_cnt = []
+            for w, y in topic_counter.most_common(30):
+                rand_wd.append(w)
+                rand_cnt.append(y)
+            result = ','.join(random.sample(rand_wd, int(topic)))
+    return result
+
+@app.callback(
         Output('bar_plot', 'figure'),
         [Input('scatter_plot', 'hoverData'),
          Input('Sort-Tags', 'value'),
@@ -391,7 +442,6 @@ def bar_plot(hoverData, sort, token):
     book_number = hoverData['points'][0]['customdata'][0]
     book_path = join(path, 'DATASET/token/')
     dirlis = sorted(os.listdir(book_path))
-    stopwords = set(nltk.corpus.stopwords.words('french'))
     freq_word  = Counter()
     result=[]
     for ii in dirlis:
