@@ -1,6 +1,5 @@
 # NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY ![](https://img.shields.io/badge/python-v3.6-orange.svg)
 
-[![Hosted Live](https://img.shields.io/badge/Hosted-Live-brightgreen.svg?style=flat)](https://bkinsight.herokuapp.com)
 
 Project implements machine learning model for natural language processing.
 Visualization is done with Plotly Dash for the client.
@@ -10,6 +9,22 @@ Plus it displays dynamically a barchart to see the frequency of word
 in the book after some initial preprocessing.
 Clustering of book similarity.
 Finally, project is hosted live on heroku.
+
+
+## PROJECT WORKFLOW
+
+<ul>
+  <li>Import and and preprocess all 148 books</li>
+  <li>Stemming & Lemmatization of extracted tokens</li>
+  <li>Visualize most frequent words on hover. Return ordered Barplot</li>
+  <li>TF-IDF Model</li>
+  
+  <li>Document Similarity using Cosine distance of book content</li>
+    <ul>Principal component analysis</ul>
+    <ul>KMeans clustering</ul>
+  <li>Topic Models</li>
+    <ul>LatentDirichletAllocation</ul>
+</ul>
 
 ## HOW TO USE
 
@@ -25,15 +40,4 @@ python mplot_script.py
 ```python
 Navigate http://127.0.0.1:8050/ 
 ```
-![Image 1](https://github.com/kennedyCzar/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY/blob/master/IMAGES/output_u3bjJu.gif)
-
-![Image 1](https://github.com/kennedyCzar/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY/blob/master/IMAGES/Screenshot%20from%202019-04-29%2003-46-04.png)
-
-
-![Image 1](https://github.com/kennedyCzar/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY/blob/master/IMAGES/Screenshot%20from%202019-04-29%2003-46-08.png)
-
-
-![Image 1](https://github.com/kennedyCzar/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY/blob/master/IMAGES/Screenshot%20from%202019-04-29%2003-46-17.png)
-
-
-![Image 1](https://github.com/kennedyCzar/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY/blob/master/IMAGES/Screenshot%20from%202019-04-29%2003-46-24.png)
+![Image 1](https://github.com/kennedyCzar/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY/blob/master/ezgif.com-video-to-gif.gif)
