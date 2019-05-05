@@ -58,6 +58,8 @@ dirlis = sorted(os.listdir(book_path))[1:]
 def tokenize(token_len):
     book_path = join(path, 'DATASET/')
     dirlis = sorted(os.listdir(book_path+'Collated books v1/'))[1:]
+    with open(join(path, 'stopwords'), 'r+') as st:
+        stopwords = [x for x in st.read().split()]
     sentence = []
     for ii in dirlis:
         with open(book_path+'Collated books v1/'+ii, 'r+') as file:
