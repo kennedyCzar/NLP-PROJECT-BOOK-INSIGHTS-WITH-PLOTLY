@@ -18,8 +18,6 @@ from os.path import join
 from nltk.tokenize import word_tokenize
 from flask import Flask
 from collections import Counter
-nltk.download('inaugural')
-nltk.download('stopwords')
 from nltk.tokenize import RegexpTokenizer
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -69,11 +67,6 @@ def tokenize(token_len):
             #--processed tokens
             new_token = []
             new_words = [ii for ii in up_text if len(ii) >= int(token_len)]
-#            for ij in up_text:
-#                if len(ij) >= int(token_len):
-#                    new_token.append(ij)
-#                else:
-#                    pass
             for each_word in new_token:
                 each_word = each_word.lower()
                 if each_word not in stopwords:
@@ -81,9 +74,9 @@ def tokenize(token_len):
             final = ' '.join(new_words)
             sentence.append(str(final))
     
-    file = pd.DataFrame({'text': sentence, 'category': data.book_category_name.values})
-    file.to_csv(book_path+'ptoken/'+'ptoken.csv')
-    return sentence, file
+#    file = pd.DataFrame({'text': sentence, 'category': data.book_category_name.values})
+#    file.to_csv(book_path+'ptoken/'+'ptoken.csv')
+    return sentence
 
 #--preprocess for brief display
 def preprocess():
@@ -103,16 +96,17 @@ def preprocess():
                     pass
 
 
-sentences, file_dt = tokenize(5)
+sentences = tokenize(5)
 preprocess()
 
 #%%
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+from sklearn.decomposition import LatentDirichletAllocation
 
-
-tv = TfidfVectorizer(min_df=0., max_df=1., use_idf=True)
+tv = TfidfVectorizer(min_df=5, use_idf=True)
 tv_matrix = tv.fit_transform(sentences)
 tv_matrix = tv_matrix.toarray()
 vocab = tv.get_feature_names()
@@ -120,10 +114,20 @@ vocab = tv.get_feature_names()
 similarity_matrix = cosine_similarity(tv_matrix)
 similarity_df = pd.DataFrame(similarity_matrix)
 
-km = KMeans(n_clusters=3, init = 'k-means++')
-km.fit_transform(similarity_df)
-cluster_labels = km.labels_
 
+
+#topic modeling
+#lda = LatentDirichletAllocation(n_components=2, max_iter=2, random_state=42)
+#dt_matrix = lda.fit_transform(tv_matrix)
+#features = pd.DataFrame(dt_matrix, columns=['T1', 'T2'])
+#tt_matrix = lda.components_
+#
+#for topic_weights in tt_matrix:
+#    topic = [(token, weight) for token, weight in zip(vocab, topic_weights)]
+#    topic = sorted(topic, key=lambda x: -x[1])
+#    topic = [item for item in topic if item[1] > 0.8]
+#    print(topic)
+#    print()
 
 #sse = []
 #for ii in range(2, 15):
@@ -276,7 +280,7 @@ app.layout = html.Div([
                     dcc.RadioItems(
                             #---
                             id='cluster',
-                            options = [{'label': i, 'value': i} for i in [str(x) for x in np.arange(2, 6, 1)]],
+                            options = [{'label': i, 'value': i} for i in [str(x) for x in np.arange(2, 7, 1)]],
                             value = "3",
                             labelStyle={'display': 'inline-block'}
                             ), 
@@ -317,10 +321,6 @@ app.layout = html.Div([
     #-- Graphs
     html.Div([
             html.Div([
-            #--scatterplot
-            #visibility: visible; left: 0%; width: 100%
-#            html.Div([
-
                     dcc.Dropdown(
                         #---
                         id='dd',
@@ -389,7 +389,7 @@ def update_figure(make_selection, drop, yaxis, clust):
     if drop != []:
         traces = []
         for val in drop:
-            traces.append(go.Scatter(
+            traces.append(go.Scattergl(
                     x = data_places.loc[data_places['book_category_name'] == str(val), 'year_edited'],
                     y = similarity_df.iloc[:, 0].values,
                     text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places.loc[data_places['book_category_name'] == str(val), 'book_code'],\
@@ -420,10 +420,11 @@ def update_figure(make_selection, drop, yaxis, clust):
                         hovermode='closest')
                         }
     else:
-        km = KMeans(n_clusters = int(clust), init = 'k-means++')
+        pca = PCA(n_components = int(clust)).fit(similarity_df)
+        km = KMeans(n_clusters = int(clust), init = pca.components_, n_init = 1)
         km.fit_transform(similarity_df)
         cluster_labels = km.labels_
-        traces = go.Scatter(
+        traces = go.Scattergl(
                 x = data_places['year_edited'],
                 y = similarity_df.iloc[:, 0].values,
                 text = [(x, y, z, w, q) for (x, y, z, w, q) in zip(data_places['book_code'], data_places['place'],\
@@ -435,6 +436,7 @@ def update_figure(make_selection, drop, yaxis, clust):
                 marker = {'size': 15, 
 #                          'opacity': 0.9,
                           'color': cluster_labels,
+                          'colorscale':'Viridis',
                           'line': {'width': .5, 'color': 'white'}},
                 )
         
