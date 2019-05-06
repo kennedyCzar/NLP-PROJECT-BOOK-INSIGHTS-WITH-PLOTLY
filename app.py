@@ -9,7 +9,6 @@ Created on Sun Apr 28 20:23:37 2019
 import pandas as pd
 import dash
 import os 
-import nltk
 import random
 import numpy as np
 from dash.dependencies import Input, Output
@@ -32,7 +31,6 @@ config={
                                    'hoverCompareCartesian', 'toggleSpikelines',
                                    ]
     }
-
 
 #%% data
 
@@ -84,10 +82,9 @@ def tokenize(token_len):
             final = ' '.join(new_words)
             sentence.append(str(final))
     #--save files to directory
-    if not os.path.exists(join(book_path, 'ptoken/ptoken.csv.gz')):
+    if not os.path.exists(join(book_path, 'ptoken/ptoken.csv')):
         file = pd.DataFrame({'text': sentence})
-        file.to_csv(book_path+'ptoken/'+'ptoken.csv.gz',
-                    compression='gzip')
+        file.to_csv(book_path+'ptoken/'+'ptoken.csv')
 
 
 
@@ -111,14 +108,13 @@ def preprocess():
 
 tokenize(5)
 preprocess()
-sentences = list(pd.read_csv(join(path, 'DATASET/ptoken/ptoken.csv.gz'), compression='gzip')['text'])
+sentences = list(pd.read_csv(join(path, 'DATASET/ptoken/ptoken.csv'))['text'])
 
 #%%
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
-from sklearn.decomposition import LatentDirichletAllocation
 
 tv = TfidfVectorizer(min_df=5, use_idf=True)
 tv_matrix = tv.fit_transform(sentences)
