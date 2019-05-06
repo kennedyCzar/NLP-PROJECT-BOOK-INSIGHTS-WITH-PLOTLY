@@ -82,10 +82,9 @@ def tokenize(token_len):
             final = ' '.join(new_words)
             sentence.append(str(final))
     #--save files to directory
-    if not os.path.exists(join(book_path, 'ptoken/ptoken.csv.gz')):
+    if not os.path.exists(join(book_path, 'ptoken/ptoken.csv')):
         file = pd.DataFrame({'text': sentence})
-        file.to_csv(book_path+'ptoken/'+'ptoken.csv.gz',
-                    compression='gzip')
+        file.to_csv(book_path+'ptoken/'+'ptoken.csv')
 
 
 
@@ -109,7 +108,7 @@ def preprocess():
 
 tokenize(5)
 preprocess()
-sentences = list(pd.read_csv(join(path, 'DATASET/ptoken/ptoken.csv.gz'), compression='gzip')['text'])
+sentences = list(pd.read_csv(join(path, 'DATASET/ptoken/ptoken.csv'))['text'])
 
 #%%
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -421,35 +420,35 @@ def update_label(hoverData):
                 file.close()
     return text
 
-@app.callback(
-        Output('topic-tags', 'children'),
-        [Input('scatter_plot', 'hoverData'),
-         Input('tokens', 'value'),
-         Input('topic-number', 'value')]
-        )
-def topic_tags(hoverData, token, topic):
-    #--
-    import random
-    book_number = hoverData['points'][0]['customdata'][0]
-    book_path = join(path, 'DATASET/token/')
-    dirlis = sorted(os.listdir(book_path))
-    topic_counter = Counter()
-    for ii in dirlis:
-        if ii.strip('_new.txt') == book_number:
-            with open(join(book_path, ii), 'r+') as f:
-                file = [wr.strip() for wr in f.readlines()]
-                file = [x for x in file if x not in stopwords and len(x) >= int(token)]
-            #--extract topic words
-            words = [x.lower() for x in file]
-            for ii in words:
-                topic_counter.update([ii])
-            rand_wd = []
-            rand_cnt = []
-            for w, y in topic_counter.most_common(30):
-                rand_wd.append(w)
-                rand_cnt.append(y)
-            result = ','.join(random.sample(rand_wd, int(topic)))
-    return result
+#@app.callback(
+#        Output('topic-tags', 'children'),
+#        [Input('scatter_plot', 'hoverData'),
+#         Input('tokens', 'value'),
+#         Input('topic-number', 'value')]
+#        )
+#def topic_tags(hoverData, token, topic):
+#    #--
+#    import random
+#    book_number = hoverData['points'][0]['customdata'][0]
+#    book_path = join(path, 'DATASET/token/')
+#    dirlis = sorted(os.listdir(book_path))
+#    topic_counter = Counter()
+#    for ii in dirlis:
+#        if ii.strip('_new.txt') == book_number:
+#            with open(join(book_path, ii), 'r+') as f:
+#                file = [wr.strip() for wr in f.readlines()]
+#                file = [x for x in file if x not in stopwords and len(x) >= int(token)]
+#            #--extract topic words
+#            words = [x.lower() for x in file]
+#            for ii in words:
+#                topic_counter.update([ii])
+#            rand_wd = []
+#            rand_cnt = []
+#            for w, y in topic_counter.most_common(30):
+#                rand_wd.append(w)
+#                rand_cnt.append(y)
+#            result = ','.join(random.sample(rand_wd, int(topic)))
+#    return result
 
 @app.callback(
         Output('bar_plot', 'figure'),
