@@ -5,11 +5,13 @@ Created on Tue Mar 26 20:52:08 2019
 @author: kennedy
 """
 
+
+
 import pandas as pd
 import dash
 import os 
 import nltk
-import random
+import gensim
 import numpy as np
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
@@ -54,7 +56,8 @@ with open(join(path, 'stopwords'), 'r+') as st:
 def tokenize(token_len):
     book_path = join(path, 'DATASET/')
     dirlis = sorted(os.listdir(book_path+'Collated books v1/'))[1:]
-    stopwords = set(nltk.corpus.stopwords.words('french'))
+    with open(join(path, 'stopwords'), 'r+') as st:
+        stopwords = set([x for x in st.read().split()])
     sentence = []
     for ii in dirlis:
         with open(book_path+'Collated books v1/'+ii, 'r+') as file:
@@ -113,7 +116,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
-from sklearn.decomposition import LatentDirichletAllocation
 
 tv = TfidfVectorizer(min_df=5, use_idf=True)
 tv_matrix = tv.fit_transform(sentences)
@@ -122,21 +124,6 @@ vocab = tv.get_feature_names()
 
 similarity_matrix = cosine_similarity(tv_matrix)
 similarity_df = pd.DataFrame(similarity_matrix)
-
-
-
-##topic modeling
-#lda = LatentDirichletAllocation(n_components=2, max_iter=2, random_state=0)
-#dt_matrix = lda.fit_transform(tv_matrix)
-#features = pd.DataFrame(dt_matrix, columns=['T1', 'T2'])
-#tt_matrix = lda.components_
-#
-#for topic_weights in tt_matrix:
-#    topic = [(token, weight) for token, weight in zip(vocab, topic_weights)]
-#    topic = sorted(topic, key=lambda x: -x[1])
-#    topic = [item for item in topic if item[1] > 0.9]
-#    print(topic)
-#    print()
 
 
 #%%
@@ -282,7 +269,7 @@ app.layout = html.Div([
                 ], style= {'width': '74%', 'display': 'inline-block','vertical-align': 'middle', 'font-size': '15px'}),
         html.Div([
                 html.H2('Topics'),
-                html.Label(id = 'topic-tags', style={'text-align': 'center', 'margin': 'auto', 'vertical-align': 'middle'})
+                html.Label(id = 'topic-tags')
                 ], style={'text-align': 'center','width': '25%', 'display': 'inline-block','vertical-align': 'middle'}),
                 ], style={'background-color': 'rgb(204, 230, 244)', 'margin': 'auto', 'width': '100%', 'max-width': '1200px', 'box-sizing': 'border-box', 'height': '30vh'}),
     #---
@@ -442,6 +429,7 @@ def update_label(hoverData):
         )
 def topic_tags(hoverData, token, topic):
     #--
+    import random
     book_number = hoverData['points'][0]['customdata'][0]
     book_path = join(path, 'DATASET/token/')
     dirlis = sorted(os.listdir(book_path))
