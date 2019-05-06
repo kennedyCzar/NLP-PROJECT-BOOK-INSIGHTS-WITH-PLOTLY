@@ -82,9 +82,9 @@ def tokenize(token_len):
             final = ' '.join(new_words)
             sentence.append(str(final))
     #--save files to directory
-    if not os.path.exists(join(book_path, 'ptoken/ptoken.csv')):
-        file = pd.DataFrame({'text': sentence})
-        file.to_csv(book_path+'ptoken/'+'ptoken.csv')
+#    if not os.path.exists(join(book_path, 'ptoken/ptoken.csv')):
+#        file = pd.DataFrame({'text': sentence})
+#        file.to_csv(book_path+'ptoken/'+'ptoken.csv')
 
 
 
