@@ -209,9 +209,8 @@ similary_sc = pd.read_csv(join(direc, 'similarity_score'), names = ['score'])
 #%%
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-#from sklearn.cluster import KMeans
-#from sklearn.decomposition import PCA
-#from sklearn.decomposition import LatentDirichletAllocation
+from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
 
 tv = TfidfVectorizer(min_df=5, use_idf=True)
 tv_matrix = tv.fit_transform(sentences)
@@ -276,16 +275,16 @@ app.layout = html.Div([
                 ], style={'background-color': 'white', 'box-shadow': 'black 0px 1px 0px 0px'}),
     #--scaling section
     html.Div([
-#            html.Div([
-#                    html.Label('Cluster size: Default is optimum'),                    
-#                    dcc.RadioItems(
-#                            #---
-#                            id='cluster',
-#                            options = [{'label': i, 'value': i} for i in [str(x) for x in np.arange(2, 7, 1)]],
-#                            value = "3",
-#                            labelStyle={'display': 'inline-block'}
-#                            ), 
-#                    ], style = {'display': 'inline-block', 'width': '20%'}),
+            html.Div([
+                    html.Label('Cluster size: Default is optimum'),                    
+                    dcc.RadioItems(
+                            #---
+                            id='cluster',
+                            options = [{'label': i, 'value': i} for i in [str(x) for x in np.arange(2, 7, 1)]],
+                            value = "3",
+                            labelStyle={'display': 'inline-block'}
+                            ), 
+                    ], style = {'display': 'inline-block', 'width': '20%'}),
             html.Div([
                     html.Label('Number of Topics:'),                    
                     dcc.RadioItems(
@@ -295,7 +294,7 @@ app.layout = html.Div([
                             value = "5",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '25%'}),
+                    ], style = {'display': 'inline-block', 'width': '20%'}),
             html.Div([
                     html.Label('y-scale:'),                    
                     dcc.RadioItems(
@@ -305,7 +304,7 @@ app.layout = html.Div([
                             value = "Linear",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '25%'}),
+                    ], style = {'display': 'inline-block', 'width': '20%'}),
             #--- Token length
             html.Div([
                     html.Label('Token length:'),                    
@@ -316,7 +315,7 @@ app.layout = html.Div([
                             value = "5",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '25%'}),
+                    ], style = {'display': 'inline-block', 'width': '20%'}),
             #--- Sort Tags
             html.Div([
                     html.Label('Sort Tags'),                    
@@ -327,7 +326,7 @@ app.layout = html.Div([
                             value = "A-z",
                             labelStyle={'display': 'inline-block'}
                             ), 
-                    ], style = {'display': 'inline-block', 'width': '25%'})
+                    ], style = {'display': 'inline-block', 'width': '20%'})
             ], style={'background-color': 'rgb(204, 230, 244)', 'padding': '1rem 0px', 'margin-top': '2px','box-shadow': 'black 0px 0px 1px 0px','vertical-align': 'middle'}),
     #-- Graphs
     html.Div([
@@ -396,9 +395,9 @@ app.layout = html.Div([
         [Input('year-slider', 'value'),
          Input('dd', 'value'),
          Input('y-items', 'value'),
-#         Input('cluster', 'value'),
+         Input('cluster', 'value'),
          ])
-def update_figure(make_selection, drop, yaxis):
+def update_figure(make_selection, drop, yaxis, clust):
 #    data_places = data[(data.year_edited >= make_selection[0]) & (data.year_edited <= make_selection[1])]
     data_places = sort_dataset[(sort_dataset.year_edited >= make_selection[0]) & (sort_dataset.year_edited <= make_selection[1])] 
     if drop != []:
@@ -435,10 +434,10 @@ def update_figure(make_selection, drop, yaxis):
                         hovermode='closest')
                         }
     else:
-#        pca = PCA(n_components = int(clust)).fit(similarity_df)
-#        km = KMeans(n_clusters = int(clust), init = pca.components_, n_init = 1)
-#        km.fit_transform(similarity_df)
-#        cluster_labels = km.labels_
+        pca = PCA(n_components = int(clust)).fit(similarity_df)
+        km = KMeans(n_clusters = int(clust), init = pca.components_, n_init = 1)
+        km.fit_transform(similarity_df)
+        cluster_labels = km.labels_
         traces = go.Scattergl(
                 x = data_places['year_edited'],
                 y = similary_sc['score'].values[1:],
@@ -450,8 +449,8 @@ def update_figure(make_selection, drop, yaxis):
                 opacity = 0.7,
                 marker = {'size': 15, 
 #                          'opacity': 0.9,
-#                          'color': [similary_sc['score'].values],
-#                          'colorscale':'Viridis',
+                          'color': cluster_labels,
+                          'colorscale':'Viridis',
                           'line': {'width': .5, 'color': 'white'}},
                 )
         
