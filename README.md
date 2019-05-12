@@ -1,5 +1,5 @@
 # NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY ![](https://img.shields.io/badge/python-v3.6-orange.svg)
-
+[![Hosted Live](https://img.shields.io/badge/Hosted-Live-brightgreen.svg?style=flat)](https://bkinsight.herokuapp.com/)
 
 Project implements machine learning model for natural language processing.
 Visualization is done with Plotly Dash for the client.
@@ -40,4 +40,4 @@ python mplot_script.py
 ```python
 Navigate http://127.0.0.1:8050/ 
 ```
-![Image 1](https://github.com/kennedyCzar/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY/blob/master/ezgif.com-video-to-gif.gif)
+![Image 1](https://github.com/kennedyCzar/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY/blob/master/vid.gif)
