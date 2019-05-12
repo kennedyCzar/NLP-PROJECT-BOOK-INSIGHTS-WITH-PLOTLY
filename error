@@ -1,0 +1,3 @@
+heroku config
+heroku config:set sensible_defaults=disabled
+heroku config:set WEB_CONCURRENCY=1
