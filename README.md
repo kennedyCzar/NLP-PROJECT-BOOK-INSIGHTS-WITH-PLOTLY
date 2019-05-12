@@ -1,5 +1,5 @@
 # NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY ![](https://img.shields.io/badge/python-v3.6-orange.svg)
-[![Hosted Live](https://img.shields.io/badge/Hosted-Live-brightgreen.svg?style=flat)](https://bkinsight.herokuapp.com/)
+Project is hosted live on Heroku [![Hosted Live](https://img.shields.io/badge/Hosted-Live-brightgreen.svg?style=flat)](https://bkinsight.herokuapp.com/)
 
 Project implements machine learning model for natural language processing.
 Visualization is done with Plotly Dash for the client.
