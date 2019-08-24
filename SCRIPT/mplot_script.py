@@ -434,7 +434,7 @@ def update_figure(make_selection, drop, yaxis, clust):
                         hovermode='closest')
                         }
     else:
-        pca = PCA(n_components = int(clust)).fit(similarity_df)
+        pca = PCA(n_components = 2).fit(similarity_df) #-using 2 principal components
         km = KMeans(n_clusters = int(clust), init = pca.components_, n_init = 1)
         km.fit_transform(similarity_df)
         cluster_labels = km.labels_
