@@ -287,16 +287,16 @@ app.layout = html.Div([
                             labelStyle={'display': 'inline-block'}
                             ), 
                     ], style = {'display': 'inline-block', 'width': '20%'}),
-#            html.Div([
-#                    html.Label('Number of Topics:'),                    
-#                    dcc.RadioItems(
-#                            #---
-#                            id='topic-number',
-#                            options = [{'label': i, 'value': i} for i in [str(x) for x in np.arange(5, 11, 1)]],
-#                            value = "5",
-#                            labelStyle={'display': 'inline-block'}
-#                            ), 
-#                    ], style = {'display': 'inline-block', 'width': '20%'}),
+            html.Div([
+                    html.Label('Number of Topics:'),                    
+                    dcc.RadioItems(
+                            #---
+                            id='topic-number',
+                            options = [{'label': i, 'value': i} for i in [str(x) for x in np.arange(5, 11, 1)]],
+                            value = "5",
+                            labelStyle={'display': 'inline-block'}
+                            ), 
+                    ], style = {'display': 'inline-block', 'width': '20%'}),
             html.Div([
                     html.Label('y-scale:'),                    
                     dcc.RadioItems(
@@ -537,23 +537,23 @@ def update_label(hoverData):
                 file.close()
     return text
 
-#@app.callback(
-#        Output('topic-tags', 'children'),
-#        [Input('scatter_plot', 'hoverData'),
-#         Input('tokens', 'value'),
-#         Input('topic-number', 'value')]
-#        )
-#def topic_tags(hoverData, token, topic):
-#    #--
-##    import random
-#    book_number = hoverData['points'][0]['customdata'][0]
-#    dirlis = os.listdir(join(path, 'DATASET/counter/{}'.format(token)))
-#    for ii in dirlis:
-#        if ii.strip('.csv.gz') == book_number:
-#            #-open csv file and extract content
-#            trac_x = random.sample(list(pd.read_csv(join(path+'/DATASET/counter/{}'.format(token), ii))['word']), int(topic))
-#            result = ', '.join(trac_x)
-#    return result
+@app.callback(
+        Output('topic-tags', 'children'),
+        [Input('scatter_plot', 'hoverData'),
+         Input('tokens', 'value'),
+         Input('topic-number', 'value')]
+        )
+def topic_tags(hoverData, token, topic):
+    #--
+#    import random
+    book_number = hoverData['points'][0]['customdata'][0]
+    dirlis = os.listdir(join(path, 'DATASET/counter/{}'.format(token)))
+    for ii in dirlis:
+        if ii.strip('.csv.gz') == book_number:
+            #-open csv file and extract content
+            trac_x = random.sample(list(pd.read_csv(join(path+'/DATASET/counter/{}'.format(token), ii))['word']), int(topic))
+            result = ', '.join(trac_x)
+    return result
 
 
 @app.callback(
