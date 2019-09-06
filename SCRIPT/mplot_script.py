@@ -38,7 +38,7 @@ config={
 #%% data
 
 #get file path
-path = '/app'
+path = '/home/kenneth/Documents/GIT_PROJECTS/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY'
 direc = join(path, 'DATASET/')
 data = pd.read_csv(direc + 'collatedsources_v1.csv', sep = ';')
 data.set_index(['ID'], inplace = True)
