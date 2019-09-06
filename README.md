@@ -41,4 +41,4 @@ python mplot_script.py
 ```python
 Navigate http://127.0.0.1:8050/ 
 ```
-![Image 1](https://github.com/kennedyCzar/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY/blob/master/vid.gif)
+![Image 1](https://github.com/kennedyCzar/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY/blob/master/bkinsight.gif)
