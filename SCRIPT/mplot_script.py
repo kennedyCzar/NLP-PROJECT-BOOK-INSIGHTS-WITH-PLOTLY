@@ -11,7 +11,7 @@ import pandas as pd
 import dash
 import os 
 import nltk
-import gensim
+import random
 import numpy as np
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
@@ -36,23 +36,26 @@ config={
 
 
 #%% data
+
 #get file path
-path = '/home/kenneth/Documents/GIT_PROJECTS/NLP-PROJECT-BOOK-INSIGHTS-WITH-PLOTLY'
+path = '/app'
 direc = join(path, 'DATASET/')
 data = pd.read_csv(direc + 'collatedsources_v1.csv', sep = ';')
 data.set_index(['ID'], inplace = True)
 columns = [x for x in data.columns]
 
+
 #load stopwords from drive
 with open(join(path, 'stopwords'), 'r+') as st:
     stopwords = [x for x in st.read().split()]
+    
 #-------------------------------
 
 #book_path = join(path, 'DATASET/Collated books v1/')
 #dirlis = sorted(os.listdir(book_path))[1:]
 
-#%% preprocess datasets
 
+#%%
 def tokenize(token_len):
     book_path = join(path, 'DATASET/')
     dirlis = sorted(os.listdir(book_path+'Collated books v1/'))[1:]
@@ -210,7 +213,7 @@ similary_sc = pd.read_csv(join(direc, 'similarity_score'), names = ['score'])
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA
+from sklearn.decomposition import PCA, KernelPCA
 
 tv = TfidfVectorizer(min_df=5, use_idf=True)
 tv_matrix = tv.fit_transform(sentences)
@@ -265,12 +268,11 @@ app.layout = html.Div([
     html.Div([
         #--header section
         html.Div([
-                html.H1('Digital Book Insight'),
+                html.H1('Medical Book clustering'),
                 ], style={'text-align': 'left','width': '49%', 'display': 'inline-block','vertical-align': 'middle'}),
         html.Div([
                 html.H4('Project by E. kenneth'),
-                html.Label('NLP with python 3: Topic visualization in intereative chart. Cluster analysis of word corpus using k-means algorithm. Hover over the data points to see '+
-                           'meta data info on respective books.')
+                html.Label('NLP with Plotly Dash: An unsupervised approach to clustering medical acheological books for insight discovery.')
                 ], style= {'width': '49%', 'display': 'inline-block','vertical-align': 'middle', 'font-size': '12px'})
                 ], style={'background-color': 'white', 'box-shadow': 'black 0px 1px 0px 0px'}),
     #--scaling section
@@ -285,16 +287,16 @@ app.layout = html.Div([
                             labelStyle={'display': 'inline-block'}
                             ), 
                     ], style = {'display': 'inline-block', 'width': '20%'}),
-            html.Div([
-                    html.Label('Number of Topics:'),                    
-                    dcc.RadioItems(
-                            #---
-                            id='topic-number',
-                            options = [{'label': i, 'value': i} for i in [str(x) for x in np.arange(5, 11, 1)]],
-                            value = "5",
-                            labelStyle={'display': 'inline-block'}
-                            ), 
-                    ], style = {'display': 'inline-block', 'width': '20%'}),
+#            html.Div([
+#                    html.Label('Number of Topics:'),                    
+#                    dcc.RadioItems(
+#                            #---
+#                            id='topic-number',
+#                            options = [{'label': i, 'value': i} for i in [str(x) for x in np.arange(5, 11, 1)]],
+#                            value = "5",
+#                            labelStyle={'display': 'inline-block'}
+#                            ), 
+#                    ], style = {'display': 'inline-block', 'width': '20%'}),
             html.Div([
                     html.Label('y-scale:'),                    
                     dcc.RadioItems(
@@ -323,7 +325,7 @@ app.layout = html.Div([
                             #---
                             id='Sort-Tags',
                             options = [{'label': i, 'value': i} for i in ['A-z', 'Most Tags']],
-                            value = "A-z",
+                            value = "Most Tags",
                             labelStyle={'display': 'inline-block'}
                             ), 
                     ], style = {'display': 'inline-block', 'width': '20%'})
@@ -434,7 +436,7 @@ def update_figure(make_selection, drop, yaxis, clust):
                         hovermode='closest')
                         }
     else:
-        pca = PCA(n_components = 2).fit(similarity_df) #-using 2 principal components
+        pca = PCA(n_components = int(clust)).fit(similarity_df)
         km = KMeans(n_clusters = int(clust), init = pca.components_, n_init = 1)
         km.fit_transform(similarity_df)
         cluster_labels = km.labels_
@@ -535,43 +537,24 @@ def update_label(hoverData):
                 file.close()
     return text
 
-@app.callback(
-        Output('topic-tags', 'children'),
-        [Input('scatter_plot', 'hoverData'),
-         Input('tokens', 'value'),
-         Input('topic-number', 'value')]
-        )
-def topic_tags(hoverData, token, topic):
-    #--
-    import random
-    book_number = hoverData['points'][0]['customdata'][0]
-    dirlis = os.listdir(join(path, 'DATASET/counter/{}'.format(token)))
-    for ii in dirlis:
-        if ii.strip('.csv.gz') == book_number:
-            #-open csv file and extract content
-            trac_x = random.sample(list(pd.read_csv(join(path+'/DATASET/counter/{}'.format(token), ii))['word']), int(topic))
-            result = ', '.join(trac_x)
-    return result
-#    book_path = join(path, 'DATASET/token/')
-#    dirlis = sorted(os.listdir(book_path))
-#    topic_counter = Counter()
+#@app.callback(
+#        Output('topic-tags', 'children'),
+#        [Input('scatter_plot', 'hoverData'),
+#         Input('tokens', 'value'),
+#         Input('topic-number', 'value')]
+#        )
+#def topic_tags(hoverData, token, topic):
+#    #--
+##    import random
+#    book_number = hoverData['points'][0]['customdata'][0]
+#    dirlis = os.listdir(join(path, 'DATASET/counter/{}'.format(token)))
 #    for ii in dirlis:
-#        if ii.strip('_new.txt') == book_number:
-#            with open(join(book_path, ii), 'r+') as f:
-#                file = [wr.strip() for wr in f.readlines()]
-#                file = [x for x in file if x not in stopwords and len(x) >= int(token)]
-#            #--extract topic words
-#            words = [x.lower() for x in file]
-#            for ii in words:
-#                topic_counter.update([ii])
-#            rand_wd = []
-#            rand_cnt = []
-#            for w, y in topic_counter.most_common(30):
-#                rand_wd.append(w)
-#                rand_cnt.append(y)
-#                result = ','.join(random.sample(rand_wd, int()))
-#            result = ','.join(random.sample(rand_wd, int(topic)))
+#        if ii.strip('.csv.gz') == book_number:
+#            #-open csv file and extract content
+#            trac_x = random.sample(list(pd.read_csv(join(path+'/DATASET/counter/{}'.format(token), ii))['word']), int(topic))
+#            result = ', '.join(trac_x)
 #    return result
+
 
 @app.callback(
         Output('bar_plot', 'figure'),
@@ -589,19 +572,19 @@ def bar_plot(hoverData, sort, token):
             #-open csv file and extract content
             trac_x = list(pd.read_csv(join(path+'/DATASET/counter/{}'.format(token), ii))['word'])[:15]
             trac_y = list(pd.read_csv(join(path+'/DATASET/counter/{}'.format(token), ii))['count'])[:15]
-            trace = go.Bar(
-                    x = trac_y,
-                    y = trac_x,
-                    marker = dict(
-                        color='rgba(50, 171, 96, 0.6)',
-                        line=dict(
-                            color='rgba(50, 171, 96, 1.0)',
-                            width=2),
-                    ),
-                    orientation = 'h',
-                    )
-                   
-            return {'data': [trace],
+            if sort == 'A-z':
+                trace = go.Bar(
+                        x = trac_y,
+                        y = trac_x,
+                        marker = dict(
+                            color='rgba(50, 171, 96, 0.6)',
+                            line=dict(
+                                color='rgba(50, 171, 96, 1.0)',
+                                width=2),
+                        ),
+                        orientation = 'h',
+                        )
+                return {'data': [trace],
                     'layout': go.Layout(
                             autosize  =False,
                             width = 500,
@@ -613,12 +596,46 @@ def bar_plot(hoverData, sort, token):
                                     t=0,
                                     pad=4
                                     ),
-                            yaxis={'autorange': 'reversed' if sort == 'A-z' else True},
+                            yaxis = {'categoryorder': 'array',
+                                     'categoryarray': [x[0] for x in sorted(zip(trac_x, trac_y))],
+                                     'autorange': 'reversed'}
                             )
                             
                     }
+            else:
+                trace = go.Bar(
+                        x = trac_y,
+                        y = trac_x,
+                        marker = dict(
+                            color='rgba(50, 171, 96, 0.6)',
+                            line=dict(
+                                color='rgba(50, 171, 96, 1.0)',
+                                width=2),
+                        ),
+                        orientation = 'h',
+                        )
+                return {'data': [trace],
+                        'layout': go.Layout(
+                                autosize  =False,
+                                width = 500,
+                                height = 600,
+                                margin=go.layout.Margin(
+                                        l=100,
+                                        r=50,
+                                        b=100,
+                                        t=0,
+                                        pad=4
+                                        ),
+                                yaxis = {'autorange': 'reversed'}
+                                )
+                                
+                        }
 
 
 if __name__ == '__main__':
   app.run_server(debug = True)
+
+
+
+
 
