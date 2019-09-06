@@ -16,7 +16,7 @@ Project is hosted live on heroku.
 ## PROJECT WORKFLOW
 
 <ul>
-  <li>Import and and preprocess all 148 books</li>
+  <li>Import and and preprocess all 148 French books</li>
   <li>Stemming & Lemmatization of extracted tokens</li>
   <li>Visualize most frequent words on hover. Return ordered Barplot</li>
   <li>TF-IDF Model</li>
