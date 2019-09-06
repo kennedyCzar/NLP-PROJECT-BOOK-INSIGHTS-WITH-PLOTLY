@@ -597,7 +597,7 @@ def bar_plot(hoverData, sort, token):
                                     pad=4
                                     ),
                             yaxis = {'categoryorder': 'array',
-                                     'categoryarray': [x[0] for x in sorted(zip(trac_x, trac_y))],
+                                     'categoryarray': [x[0].lower() for x in sorted(zip(trac_x, trac_y))],
                                      'autorange': 'reversed'}
                             )
                             
