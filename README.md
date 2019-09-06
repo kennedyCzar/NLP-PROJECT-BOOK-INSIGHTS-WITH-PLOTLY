@@ -4,13 +4,13 @@
 Project is hosted live on Heroku [![Hosted Live](https://img.shields.io/badge/Hosted-Live-brightgreen.svg?style=flat)](https://bkinsight.herokuapp.com/)
 
 Project implements machine learning model for natural language processing.
-Visualization is done with Plotly Dash for the client.
-Dynamically hover over data point to display book meta data,
+Visualization is done with Plotly Dash.
+Dynamically hover over data point to display book meta data;
 book title, year and author name just below the chart.
 Plus it displays dynamically a barchart to see the frequency of word
 in the book after some initial preprocessing.
 Clustering of book similarity.
-Finally, project is hosted live on heroku.
+Project is hosted live on heroku.
 
 
 ## PROJECT WORKFLOW
@@ -24,8 +24,8 @@ Finally, project is hosted live on heroku.
   <li>Document Similarity using Cosine distance of book content</li>
     <ul>Principal component analysis</ul>
     <ul>KMeans clustering</ul>
-  <li>Topic Models</li>
-    <ul>LatentDirichletAllocation</ul>
+  <li><s>Topic Models</li>
+    <ul><s>LatentDirichletAllocation</ul>
 </ul>
 
 ## HOW TO USE
