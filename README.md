@@ -5,11 +5,10 @@ Project is hosted live on Heroku [![Hosted Live](https://img.shields.io/badge/Ho
 
 Project implements machine learning model for natural language processing.
 Visualization is done with Plotly Dash.
-Dynamically hover over data point to display book meta data;
-book title, year and author name just below the chart.
-Plus it displays dynamically a barchart to see the frequency of word
-in the book after some initial preprocessing.
-Clustering of book similarity.
+Flexibility of hovering over data points to visualize book properties (meta-data) and similarity score, 
+horizontal bar chart and book imprint.
+Major processing on books to extract tokenized and lemmatized features, principal component analysis for dimension reduction,
+and Kmeans clustering to visualize relationship among books.
 Project is hosted live on heroku.
 
 
