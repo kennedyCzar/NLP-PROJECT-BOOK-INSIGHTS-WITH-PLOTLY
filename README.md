@@ -24,8 +24,8 @@ Project is hosted live on heroku.
   <li>Document Similarity using Cosine distance of book content</li>
     <ul>Principal component analysis</ul>
     <ul>KMeans clustering</ul>
-  <li><s>Topic Models</li>
-    <ul><s>LatentDirichletAllocation</ul>
+  <li><s>Topic Models</s></li>
+    <ul><s>LatentDirichletAllocation</s></ul>
 </ul>
 
 ## HOW TO USE
