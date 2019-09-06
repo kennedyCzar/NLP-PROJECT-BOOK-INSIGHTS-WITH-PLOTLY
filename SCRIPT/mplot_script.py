@@ -294,7 +294,10 @@ app.layout = html.Div([
                 ], style={'text-align': 'left','width': '49%', 'display': 'inline-block','vertical-align': 'middle'}),
         html.Div([
                 html.H4('Project by E. kenneth'),
-                html.Label('NLP with Plotly Dash: An unsupervised approach to clustering medical acheological books for insight discovery.')
+                html.Label('NLP with Plotly Dash: An unsupervised approach to clustering medical acheological books for insight discovery. \
+                           Hover flexibilty,\
+                           principal component analysis for dimension reduction, \
+                           and Kmeans clustering to visualize relationship among books.')
                 ], style= {'width': '49%', 'display': 'inline-block','vertical-align': 'middle', 'font-size': '12px'})
                 ], style={'background-color': 'white', 'box-shadow': 'black 0px 1px 0px 0px'}),
     #--scaling section
