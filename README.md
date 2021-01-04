@@ -3,7 +3,7 @@
 
 Project is hosted live on Heroku [![Hosted Live](https://img.shields.io/badge/Hosted-Live-brightgreen.svg?style=flat)](https://bkinsight.herokuapp.com/)
 
-Project implements machine learning model for natural language processing.
+Project implements machine learning model for Natural Language Processing (NLP).
 Visualization is done with Plotly Dash.
 Flexibility of hovering over data points to visualize book properties (meta-data) and similarity score, 
 horizontal bar chart and book imprint.
